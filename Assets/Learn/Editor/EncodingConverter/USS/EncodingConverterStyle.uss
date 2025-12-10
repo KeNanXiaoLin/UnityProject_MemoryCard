@@ -1,0 +1,68 @@
+#Root {
+    padding: 15px;
+    background-color: rgb(30, 30, 30);
+    flex-direction: column;
+}
+
+#TopArea {
+    flex-direction: column;
+}
+
+#FileListView {
+    background-color: rgb(35, 35, 35);
+    border-radius: 4px;
+    padding: 5px;
+}
+
+#FileListContainer {
+    flex-direction: column;
+    gap: 4px;
+}
+
+.file-item {
+    background-color: rgb(40, 40, 40);
+    padding: 6px 10px;
+    border-radius: 3px;
+    color: white;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 选中文件高亮（可选，突出显示） */
+.file-item:hover {
+    background-color: rgb(50, 50, 70);
+}
+
+#ActionArea {
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+#ConvertBtn {
+    background-color: rgb(39, 174, 96);
+    color: white;
+    border-color: rgb(46, 204, 113);
+    height: 32px;
+    flex-grow: 1;
+}
+
+#ConvertBtn:hover {
+    background-color: rgb(46, 204, 113);
+}
+
+#ConvertBtn:disabled {
+    background-color: rgb(60, 60, 60);
+    border-color: rgb(80, 80, 80);
+}
+
+#BackupToggle {
+    color: white;
+    font-size: 12px;
+}
+
+#StatusLabel {
+    font-size: 12px;
+}

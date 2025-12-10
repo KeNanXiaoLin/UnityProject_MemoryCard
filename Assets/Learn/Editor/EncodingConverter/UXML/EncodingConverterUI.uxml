@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Learn/Editor/EncodingConverter/USS/EncodingConverterStyle.uss?fileID=7433441132597879392&amp;guid=ef17b1e1e31c3489790262b03d68d55f&amp;type=3#EncodingConverterStyle" />
+    <ui:VisualElement name="Root">
+        <ui:VisualElement name="TopArea">
+            <ui:Label text="操作说明：在 Project 窗口选中要转换的文本文件（GBK→UTF-8）" style="color: rgb(160, 160, 160); font-size: 12px;" />
+            <ui:Label name="FileCountLabel" text="已选中：0 个文件" style="color: white; font-size: 13px; margin-top: 5px;" />
+        </ui:VisualElement>
+        <ui:ScrollView name="FileListView" style="margin-top: 10px; flex-grow: 1;">
+            <ui:VisualElement name="FileListContainer" />
+        </ui:ScrollView>
+        <ui:VisualElement name="ActionArea" style="margin-top: 10px;">
+            <ui:Button name="ConvertBtn" text="开始转换（覆盖原文件）" />
+            <ui:Toggle name="BackupToggle" label="转换前备份原文件（后缀 .bak）" value="true" />
+        </ui:VisualElement>
+        <ui:Label name="StatusLabel" text="状态：等待选中文件..." style="margin-top: 5px; color: rgb(160, 160, 160);" />
+    </ui:VisualElement>
+</ui:UXML>
