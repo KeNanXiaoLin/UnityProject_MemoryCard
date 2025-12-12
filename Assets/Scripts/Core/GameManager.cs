@@ -6,7 +6,9 @@ using UnityEngine;
 public class GameManager : BaseManager<GameManager>
 {
     public LevelData levelData;
-    private List<Sprite> sprites;
+    // 现在的实现方式用不到这个字段
+    // private List<Sprite> sprites;
+    private List<Material> materials;
     /// <summary>
     /// 当前的关卡
     /// </summary>
@@ -14,24 +16,20 @@ public class GameManager : BaseManager<GameManager>
     /// <summary>
     /// 当前关卡的牌组
     /// </summary>
-    private List<CardData> cardDatas = new List<CardData>();
+    public List<CardData> cardDatas = new List<CardData>();
         
     private GameManager()
     {
         levelData = new LevelData();
         
-        sprites = new List<Sprite>();
-        string suffix = "";
-        for (int i = 0; i < 25; i++)
-        {
-            suffix = (i + 1) < 10 ? "0" + (i + 1) : (i + 1).ToString();
-            sprites.Add(ResMgr.Instance.Load<Sprite>("Sprites/style_1_" + suffix));
-        }
+        Material[] materials = ResMgr.Instance.LoadAll<Material>("Materials");
+        this.materials = new List<Material>(materials);
         
     }
 
     public void Init()
     {
+        //构建当前关卡的数据
         //构建当前关卡的牌组,2个一组
         SingleLevelData levelData = this.levelData.GetLevelData(curLevel);
         int index = 0;
@@ -40,19 +38,20 @@ public class GameManager : BaseManager<GameManager>
             for (int j = 0; j < levelData.colCount; j++)
             {
                 index = i*levelData.colCount + j;
-                Sprite icon = sprites[index / 2];
+                int id = index / 2;
+                Material material = materials[index / 2];
                 float x = levelData.startX + j*levelData.cardWidth + j*levelData.spacingX;
                 float y = levelData.startY - i*levelData.cardHeight - i*levelData.spacingY;
-                cardDatas.Add(new CardData(icon,x,y));
+                cardDatas.Add(new CardData(material,id,x,y));
             }
         }
-        //在场景中实例化牌组
-        for (int i = 0; i < cardDatas.Count; i++)
-        {
-            GameObject cardPrefab = ResMgr.Instance.Load<GameObject>("Prefabs/Card");
-            Card card = GameObject.Instantiate(cardPrefab).GetComponent<Card>();
-            card.Init(cardDatas[i]);
-        }
         Debug.Log("GameManager Init");
+    }
+
+    internal void GoToNextLevel()
+    {
+        cardDatas.Clear();
+        curLevel++;
+        Init();
     }
 }

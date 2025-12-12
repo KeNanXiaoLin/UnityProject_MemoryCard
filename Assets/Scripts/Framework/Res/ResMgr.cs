@@ -105,6 +105,10 @@ public class ResMgr : BaseManager<ResMgr>
         }
     }
 
+    public T[] LoadAll<T>(string path) where T : UnityEngine.Object
+    {
+        return Resources.LoadAll<T>(path);
+    }
     /// <summary>
     /// 异步加载资源的方法
     /// </summary>

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3403252827691552983}
   - component: {fileID: 44669015829616919}
   - component: {fileID: 3389375861806763598}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -68,7 +68,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27e2c30f46157ac418a594a5b79b42a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 0}
+  frontRenderer: {fileID: 184201380805312488}
+  backRenderer: {fileID: 4235795834952779204}
 --- !u!1 &3982090413103673508
 GameObject:
   m_ObjectHideFlags: 0
@@ -81,8 +82,8 @@ GameObject:
   - component: {fileID: 8937231135578078761}
   - component: {fileID: 184201380805312488}
   - component: {fileID: 5272483642028171402}
-  m_Layer: 0
-  m_Name: Back
+  m_Layer: 6
+  m_Name: Front
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -131,7 +132,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebe783357a4724544b0bf243883005df, type: 2}
+  - {fileID: 2100000, guid: e930046d96285e14abfafafaf3ed4290, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -187,8 +188,8 @@ GameObject:
   - component: {fileID: 2413558868469793585}
   - component: {fileID: 4235795834952779204}
   - component: {fileID: 8620514233934202507}
-  m_Layer: 0
-  m_Name: Front
+  m_Layer: 6
+  m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -237,7 +238,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebed9b4c8c1806343a454da1f02aed59, type: 2}
+  - {fileID: 2100000, guid: be463d109db3c434cb6db0cdfd55667b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
