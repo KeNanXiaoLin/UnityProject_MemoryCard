@@ -2,34 +2,40 @@
     {
         "id": 1001,
         "level": 1,
-        "startX": 0.0,
-        "startY": 0.0,
+        "startX": -5.0,
+        "startY": 5.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
         "rowCount": 3,
         "colCount": 2,
-        "cardCount": 6
+        "cardCount": 6,
+        "cardWidth": 1.0,
+        "cardHeight": "1.5"
     },
     {
         "id": 1002,
         "level": 2,
-        "startX": 0.0,
-        "startY": 0.0,
+        "startX": -5.0,
+        "startY": 5.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
         "rowCount": 4,
         "colCount": 2,
-        "cardCount": 8
+        "cardCount": 8,
+        "cardWidth": 1.0,
+        "cardHeight": "1.5"
     },
     {
         "id": 1003,
         "level": 3,
-        "startX": 0.0,
-        "startY": 0.0,
+        "startX": -5.0,
+        "startY": 5.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
         "rowCount": 4,
         "colCount": 3,
-        "cardCount": 12
+        "cardCount": 12,
+        "cardWidth": 1.0,
+        "cardHeight": "1.5"
     }
 ]
