@@ -9,6 +9,7 @@ public class ScriptPreviewWindow : EditorWindow
     private string _className;
     private bool _isIncremental;
     private Vector2 _scrollPos;
+    private UIGeneratorSettings _settings;
 
     /// <summary>
     /// 打开预览窗口
@@ -21,6 +22,7 @@ public class ScriptPreviewWindow : EditorWindow
         window._scriptPath = scriptPath;
         window._className = className;
         window._isIncremental = isIncremental;
+        window._settings = UIGeneratorSettings.Instance;
         window.Show();
     }
 
@@ -33,7 +35,7 @@ public class ScriptPreviewWindow : EditorWindow
         if (_isIncremental)
         {
             GUILayout.Label("💡 浅绿色行=本次新增 | 浅红色行=本次移除", EditorStyles.miniBoldLabel);
-            GUILayout.Label($"⚠️ 本次操作已自动备份原有脚本到：{GeneratorConfig.BackupPath}（扩展名：{GeneratorConfig.BackupFileExtension}）", EditorStyles.miniLabel);
+            GUILayout.Label($"⚠️ 本次操作已自动备份原有脚本到：{_settings.BackupFullPath}（扩展名：{_settings.backupFileExtension}）", EditorStyles.miniLabel);
         }
 
         GUILayout.Space(10);
@@ -50,28 +52,28 @@ public class ScriptPreviewWindow : EditorWindow
         foreach (string line in lines)
         {
             // 判断行类型
-            bool isNewAdd = line.Contains(GeneratorConfig.NEW_ADD_MARKER);
-            bool isRemove = line.Contains(GeneratorConfig.REMOVE_MARKER);
+            bool isNewAdd = line.Contains(_settings.newAddMarker);
+            bool isRemove = line.Contains(_settings.removeMarker);
 
-            // 设置颜色
+            // 设置颜色（从配置读取）
             if (isRemove)
             {
-                GUI.contentColor = GeneratorConfig.RemoveColor;
+                GUI.contentColor = _settings.removeColor;
             }
             else if (isNewAdd)
             {
-                GUI.contentColor = GeneratorConfig.NewAddColor;
+                GUI.contentColor = _settings.newAddColor;
             }
             else
             {
-                GUI.contentColor = GeneratorConfig.NormalColor;
+                GUI.contentColor = _settings.normalColor;
             }
 
             // 绘制行内容
             GUILayout.Label(line, EditorStyles.textArea);
 
             // 重置颜色
-            GUI.contentColor = GeneratorConfig.NormalColor;
+            GUI.contentColor = _settings.normalColor;
         }
 
         EditorGUILayout.EndScrollView();

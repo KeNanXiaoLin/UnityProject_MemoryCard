@@ -28,10 +28,8 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         {"TMP_InputField","TMP_InputField"},
     };
 
-    // 锚点常量
-    private const string FIELD_ADD_ANCHOR = "// 留给新增的字段";
-    private const string EVENT_BIND_ADD_ANCHOR = "// 留给新增的组件事件绑定";
-    private const string EVENT_METHOD_ADD_ANCHOR = "// 留给新增的组件事件绑定函数";
+    // 获取全局配置
+    private static UIGeneratorSettings Settings => UIGeneratorSettings.Instance;
 
     [MenuItem("GameObject/生成面板脚本")]
     static void CreateFindComponentScripts()
@@ -53,14 +51,15 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         objDataList = new List<EditorObjectData>();
         PresWindowNodeData(obj.transform);
         string datalistJson = JsonConvert.SerializeObject(objDataList);
-        PlayerPrefs.SetString(GeneratorConfig.ObjDataListKey, datalistJson);
+        PlayerPrefs.SetString(UIGeneratorSettings.ObjDataListKey, datalistJson);
 
-        // 2. 设置脚本路径
-        if (!Directory.Exists(GeneratorConfig.BindComponentGeneratorPath))
+        // 2. 设置脚本路径（从配置读取）
+        string absoluteRootPath = Path.Combine(Application.dataPath, "..", Settings.scriptGenerateRootPath).Replace("\\", "/");
+        if (!Directory.Exists(absoluteRootPath))
         {
-            Directory.CreateDirectory(GeneratorConfig.BindComponentGeneratorPath);
+            Directory.CreateDirectory(absoluteRootPath);
         }
-        string csPath = Path.Combine(GeneratorConfig.BindComponentGeneratorPath, $"{obj.name}.cs");
+        string csPath = Path.Combine(absoluteRootPath, $"{obj.name}.cs");
 
         // 3. 增量更新前先备份（首次生成无需备份）
         if (File.Exists(csPath))
@@ -87,30 +86,31 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     }
 
     /// <summary>
-    /// 备份脚本到指定目录（使用自定义扩展名）
+    /// 备份脚本到指定目录（使用配置的扩展名）
     /// </summary>
     private static void BackupScript(string scriptPath)
     {
         try
         {
-            // 1. 创建备份目录
-            if (!Directory.Exists(GeneratorConfig.BackupPath))
+            // 1. 创建备份目录（从配置读取路径）
+            string absoluteBackupPath = Path.Combine(Application.dataPath, "..", Settings.BackupFullPath).Replace("\\", "/");
+            if (!Directory.Exists(absoluteBackupPath))
             {
-                Directory.CreateDirectory(GeneratorConfig.BackupPath);
+                Directory.CreateDirectory(absoluteBackupPath);
             }
 
-            // 2. 生成备份文件名（原文件名_时间戳_Backup.uibak）
+            // 2. 生成备份文件名（从配置读取后缀和扩展名）
             string fileName = Path.GetFileNameWithoutExtension(scriptPath);
             string timeStamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string backupFileName = $"{fileName}_{timeStamp}{GeneratorConfig.BackupFileSuffix}{GeneratorConfig.BackupFileExtension}";
-            string backupPath = Path.Combine(GeneratorConfig.BackupPath, backupFileName);
+            string backupFileName = $"{fileName}_{timeStamp}{Settings.backupFileSuffix}{Settings.backupFileExtension}";
+            string backupPath = Path.Combine(absoluteBackupPath, backupFileName);
 
-            // 3. 复制文件到备份目录（保留原文件内容，仅改扩展名）
+            // 3. 复制文件到备份目录
             File.Copy(scriptPath, backupPath, true);
             Debug.Log($"脚本备份成功：{backupPath}");
 
-            // 4. 清理超出数量的旧备份
-            CleanOldBackups();
+            // 4. 清理超出数量的旧备份（从配置读取最大数量）
+            CleanOldBackups(absoluteBackupPath);
         }
         catch (Exception e)
         {
@@ -119,22 +119,22 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     }
 
     /// <summary>
-    /// 清理超出最大数量的旧备份（适配自定义扩展名）
+    /// 清理超出最大数量的旧备份（适配配置的扩展名）
     /// </summary>
-    private static void CleanOldBackups()
+    private static void CleanOldBackups(string backupPath)
     {
         try
         {
             // 获取所有自定义扩展名的备份文件，按创建时间排序
-            DirectoryInfo dirInfo = new DirectoryInfo(GeneratorConfig.BackupPath);
-            FileInfo[] backupFiles = dirInfo.GetFiles($"*{GeneratorConfig.BackupFileSuffix}{GeneratorConfig.BackupFileExtension}")
+            DirectoryInfo dirInfo = new DirectoryInfo(backupPath);
+            FileInfo[] backupFiles = dirInfo.GetFiles($"*{Settings.backupFileSuffix}{Settings.backupFileExtension}")
                 .OrderBy(f => f.CreationTime)
                 .ToArray();
 
-            // 超出最大数量则删除最旧的
-            if (backupFiles.Length > GeneratorConfig.MaxBackupCount)
+            // 超出最大数量则删除最旧的（从配置读取最大数量）
+            if (backupFiles.Length > Settings.maxBackupCount)
             {
-                int deleteCount = backupFiles.Length - GeneratorConfig.MaxBackupCount;
+                int deleteCount = backupFiles.Length - Settings.maxBackupCount;
                 for (int i = 0; i < deleteCount; i++)
                 {
                     backupFiles[i].Delete();
@@ -205,27 +205,27 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         // 4. 处理新增内容（追加到锚点后）
         if (addFields.Count > 0)
         {
-            string nameSpacePrefix = string.IsNullOrEmpty("MyFrameWork") ? "" : "\t";
+            string nameSpacePrefix = string.IsNullOrEmpty(Settings.defaultNamespace) ? "" : "\t";
             string newFieldContent = CreateNewFieldContent(addFields, nameSpacePrefix, withMarker);
             string newEventBindContent = CreateNewEventBindContent(addFields, nameSpacePrefix, withMarker);
             string newEventMethodContent = CreateNewEventMethodContent(addFields, nameSpacePrefix, withMarker);
 
             // 插入新增字段
-            int fieldAnchorIndex = FindLineIndex(newLines, FIELD_ADD_ANCHOR);
+            int fieldAnchorIndex = FindLineIndex(newLines, UIGeneratorSettings.FIELD_ADD_ANCHOR);
             if (fieldAnchorIndex != -1 && fieldAnchorIndex + 1 < newLines.Count)
             {
                 newLines.Insert(fieldAnchorIndex + 1, newFieldContent);
             }
 
             // 插入新增事件绑定
-            int eventBindAnchorIndex = FindLineIndex(newLines, EVENT_BIND_ADD_ANCHOR);
+            int eventBindAnchorIndex = FindLineIndex(newLines, UIGeneratorSettings.EVENT_BIND_ADD_ANCHOR);
             if (eventBindAnchorIndex != -1 && eventBindAnchorIndex + 1 < newLines.Count)
             {
                 newLines.Insert(eventBindAnchorIndex + 1, newEventBindContent);
             }
 
             // 插入新增事件方法
-            int eventMethodAnchorIndex = FindLineIndex(newLines, EVENT_METHOD_ADD_ANCHOR);
+            int eventMethodAnchorIndex = FindLineIndex(newLines, UIGeneratorSettings.EVENT_METHOD_ADD_ANCHOR);
             if (eventMethodAnchorIndex != -1 && eventMethodAnchorIndex + 1 < newLines.Count)
             {
                 newLines.Insert(eventMethodAnchorIndex + 1, newEventMethodContent);
@@ -257,7 +257,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     private static List<string> MarkRemoveContent(List<string> lines, List<string> removeFields)
     {
         List<string> markedLines = new List<string>(lines);
-        string marker = $" {GeneratorConfig.REMOVE_MARKER}";
+        string marker = $" {Settings.removeMarker}";
 
         // ========== 第一步：标记Start方法内的事件绑定行 ==========
         // 先定位Start方法的范围
@@ -288,7 +288,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
             for (int i = 0; i < markedLines.Count; i++)
             {
                 if (Regex.IsMatch(markedLines[i], $"public\\s+\\w+\\s+{fieldName};") &&
-                    !markedLines[i].Contains(GeneratorConfig.REMOVE_MARKER))
+                    !markedLines[i].Contains(Settings.removeMarker))
                 {
                     markedLines[i] += marker;
                     break;
@@ -380,7 +380,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         for (int i = 0; i < lines.Count; i++)
         {
             if (Regex.IsMatch(lines[i], $"private void {methodName}\\(.*\\)") &&
-                !lines[i].Contains(GeneratorConfig.REMOVE_MARKER))
+                !lines[i].Contains(Settings.removeMarker))
             {
                 methodStartIndex = i;
                 isInMethodBlock = true;
@@ -411,14 +411,14 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
                     // 遇到闭合大括号，标记当前行后退出方法块
                     if (braceCount == 0)
                     {
-                        if (!lines[i].Contains(GeneratorConfig.REMOVE_MARKER))
+                        if (!lines[i].Contains(Settings.removeMarker))
                         {
                             lines[i] += marker;
                         }
                         isInMethodBlock = false;
                         // 标记方法块后的空行（优化格式）
                         if (i + 1 < lines.Count && string.IsNullOrWhiteSpace(lines[i + 1]) &&
-                            !lines[i + 1].Contains(GeneratorConfig.REMOVE_MARKER))
+                            !lines[i + 1].Contains(Settings.removeMarker))
                         {
                             lines[i + 1] += marker;
                         }
@@ -428,7 +428,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
             }
 
             // 标记方法块内的行（除了方法定义行已标记）
-            if (isInMethodBlock && i > methodStartIndex && !lines[i].Contains(GeneratorConfig.REMOVE_MARKER))
+            if (isInMethodBlock && i > methodStartIndex && !lines[i].Contains(Settings.removeMarker))
             {
                 lines[i] += marker;
             }
@@ -452,10 +452,10 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         foreach (string line in lines)
         {
             // 跳过带移除标记的行
-            if (!line.Contains(GeneratorConfig.REMOVE_MARKER))
+            if (!line.Contains(Settings.removeMarker))
             {
                 // 移除新增标记，保留纯净代码
-                string cleanLine = line.Replace(GeneratorConfig.NEW_ADD_MARKER, "").TrimEnd();
+                string cleanLine = line.Replace(Settings.newAddMarker, "").TrimEnd();
                 cleanLines.Add(cleanLine);
             }
         }
@@ -465,12 +465,12 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     }
 
     /// <summary>
-    /// 首次生成完整脚本模板
+    /// 首次生成完整脚本模板（从配置读取命名空间）
     /// </summary>
     private static string CreateFirstCS(string csName)
     {
         StringBuilder sb = new();
-        string nameSpaceStr = "MyFrameWork";
+        string nameSpaceStr = Settings.defaultNamespace;
         sb.AppendLine("/*----------------------------------");
         sb.AppendLine(" *Title:UI自动化组件生成代码生成工具");
         sb.AppendLine(" *Date:" + DateTime.Now);
@@ -500,7 +500,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         {
             sb.AppendLine($"{nameSpacePrefix}\tpublic {item.fieldType} {item.fieldName};");
         }
-        sb.AppendLine($"{nameSpacePrefix}\t{FIELD_ADD_ANCHOR}");
+        sb.AppendLine($"{nameSpacePrefix}\t{UIGeneratorSettings.FIELD_ADD_ANCHOR}");
         sb.AppendLine($"{nameSpacePrefix}\t//自己手写的字段声明，不会被覆盖");
 
         sb.AppendLine();
@@ -539,7 +539,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
                 sb.AppendLine($"{nameSpacePrefix}\t\t{fieldName}.onValueChanged.AddListener((value)=>On{fieldName}ToggleChange(value));");
             }
         }
-        sb.AppendLine($"{nameSpacePrefix}\t\t{EVENT_BIND_ADD_ANCHOR}");
+        sb.AppendLine($"{nameSpacePrefix}\t\t{UIGeneratorSettings.EVENT_BIND_ADD_ANCHOR}");
         sb.AppendLine($"{nameSpacePrefix}\t\t//自己手写的Start逻辑，不会被覆盖");
         sb.AppendLine($"{nameSpacePrefix}\t}}");
 
@@ -593,7 +593,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
                 sb.AppendLine();
             }
         }
-        sb.AppendLine($"{nameSpacePrefix}\t{EVENT_METHOD_ADD_ANCHOR}");
+        sb.AppendLine($"{nameSpacePrefix}\t{UIGeneratorSettings.EVENT_METHOD_ADD_ANCHOR}");
         sb.AppendLine($"{nameSpacePrefix}\t//自己写的内容");
 
         sb.AppendLine($"{nameSpacePrefix}}}");
@@ -606,12 +606,12 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     }
 
     /// <summary>
-    /// 生成新增字段代码
+    /// 生成新增字段代码（从配置读取标记）
     /// </summary>
     private static string CreateNewFieldContent(List<EditorObjectData> addFields, string nameSpacePrefix, bool withMarker)
     {
         StringBuilder sb = new StringBuilder();
-        string marker = withMarker ? $" {GeneratorConfig.NEW_ADD_MARKER}" : "";
+        string marker = withMarker ? $" {Settings.newAddMarker}" : "";
         foreach (var item in addFields)
         {
             sb.AppendLine($"{nameSpacePrefix}\tpublic {item.fieldType} {item.fieldName};{marker}");
@@ -620,12 +620,12 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     }
 
     /// <summary>
-    /// 生成新增事件绑定代码
+    /// 生成新增事件绑定代码（从配置读取标记）
     /// </summary>
     private static string CreateNewEventBindContent(List<EditorObjectData> addFields, string nameSpacePrefix, bool withMarker)
     {
         StringBuilder sb = new StringBuilder();
-        string marker = withMarker ? $" {GeneratorConfig.NEW_ADD_MARKER}" : "";
+        string marker = withMarker ? $" {Settings.newAddMarker}" : "";
         foreach (var item in addFields)
         {
             string type = item.fieldType;
@@ -648,12 +648,12 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     }
 
     /// <summary>
-    /// 生成新增事件方法代码
+    /// 生成新增事件方法代码（从配置读取标记）
     /// </summary>
     private static string CreateNewEventMethodContent(List<EditorObjectData> addFields, string nameSpacePrefix, bool withMarker)
     {
         StringBuilder sb = new StringBuilder();
-        string marker = withMarker ? $" {GeneratorConfig.NEW_ADD_MARKER}" : "";
+        string marker = withMarker ? $" {Settings.newAddMarker}" : "";
         foreach (var item in addFields)
         {
             string type = item.fieldType;
@@ -728,7 +728,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         // 反射获取生成的类
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
         var cSharpAssembly = assemblies.First(assembly => assembly.GetName().Name == "Assembly-CSharp");
-        string relClassName = "MyFrameWork." + className;
+        string relClassName = $"{Settings.defaultNamespace}.{className}";
         Type type = cSharpAssembly.GetType(relClassName);
         if (type == null) return;
 
@@ -746,7 +746,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         }
 
         // 赋值组件字段
-        string datalistJson = PlayerPrefs.GetString(GeneratorConfig.ObjDataListKey);
+        string datalistJson = PlayerPrefs.GetString(UIGeneratorSettings.ObjDataListKey);
         List<EditorObjectData> objDataList = JsonConvert.DeserializeObject<List<EditorObjectData>>(datalistJson);
         FieldInfo[] fieldInfoList = type.GetFields();
 
@@ -789,8 +789,8 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         // 记录类名
         EditorPrefs.SetString("GeneratorClassName", className);
 
-        // 提示备份信息（说明自定义扩展名）
-        string backupTip = $"脚本生成成功！\n备份文件路径：{GeneratorConfig.BackupPath}\n备份文件扩展名：{GeneratorConfig.BackupFileExtension}\n最多保留{GeneratorConfig.MaxBackupCount}个备份文件";
+        // 提示备份信息（从配置读取参数）
+        string backupTip = $"脚本生成成功！\n备份文件路径：{Settings.BackupFullPath}\n备份文件扩展名：{Settings.backupFileExtension}\n最多保留{Settings.maxBackupCount}个备份文件";
         Debug.Log(backupTip);
         EditorUtility.DisplayDialog("生成完成", backupTip, "确定");
     }

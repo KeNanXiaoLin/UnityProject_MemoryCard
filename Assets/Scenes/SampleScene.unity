@@ -1913,7 +1913,6 @@ GameObject:
   - component: {fileID: 2041109638}
   - component: {fileID: 2041109640}
   - component: {fileID: 2041109639}
-  - component: {fileID: 2041109641}
   m_Layer: 5
   m_Name: GameStartPanel
   m_TagString: Untagged
@@ -1986,26 +1985,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041109637}
   m_CullTransparentMesh: 1
---- !u!114 &2041109641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2041109637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a551a349cccb4641aedeb45029871c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  togMusic: {fileID: 82879633}
-  imgHead: {fileID: 766518933}
-  img2: {fileID: 1518662851}
-  tmpName: {fileID: 1382631341}
-  btnTest: {fileID: 1761459073}
-  btnStart: {fileID: 949580291}
-  btnQuit: {fileID: 1710704368}
-  input: {fileID: 314546624}
 --- !u!1 &2119618718
 GameObject:
   m_ObjectHideFlags: 0
