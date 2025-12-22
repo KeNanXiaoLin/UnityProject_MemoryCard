@@ -1,0 +1,40 @@
+ManifestFileVersion: 0
+CRC: 1908087119
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 36720a55cd9dbb92dd4bb5cbaad0cb6b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 948158b9bfe8c1e5f532d76f589c44b5
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 36720a55cd9dbb92dd4bb5cbaad0cb6b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 27e2c30f46157ac418a594a5b79b42a2, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/ArtRes/Prefabs/Card.prefab
+Dependencies: []

@@ -13,6 +13,7 @@ public class GameLogic : MonoBehaviour
 
     // 新增：初始化动画完成标记（关键锁）
     private bool isInitAnimCompleted = false;
+    private string prefabLoadPath = "";
 
     public bool CanFlipNewCard
     {
@@ -23,6 +24,11 @@ public class GameLogic : MonoBehaviour
             if (flipCount >= 2) return false;
             return true;
         }
+    }
+
+    void Awake()
+    {
+        prefabLoadPath = ResLoadSettings.Instance.GetPrefabPath;
     }
 
     void Start()
@@ -44,10 +50,12 @@ public class GameLogic : MonoBehaviour
         // 加载卡牌逻辑不变
         for (int i = 0; i < GameManager.Instance.cardDatas.Count; i++)
         {
-            GameObject cardPrefab = ResMgr.Instance.Load<GameObject>("Prefabs/Card");
-            Card card = GameObject.Instantiate(cardPrefab).GetComponent<Card>();
-            card.Init(GameManager.Instance.cardDatas[i]);
-            cards.Add(card);
+            ResLoadMgr.Instance.LoadRes<GameObject>(prefabLoadPath,"Card",(res)=>
+            {
+                Card card = GameObject.Instantiate(res).GetComponent<Card>();
+                card.Init(GameManager.Instance.cardDatas[i]);
+                cards.Add(card);
+            },true);
         }
         Debug.Log("Current Card Count: " + cards.Count);
         Shuffle();

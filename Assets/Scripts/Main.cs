@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using MyFrameWork;
 using UnityEngine;
 
 public class Main : MonoBehaviour
@@ -8,6 +9,7 @@ public class Main : MonoBehaviour
     void Awake()
     {
         GameManager.Instance.Init();
+        // UIMgr.Instance.ShowPanel<GameStartPanel>(isSync:true);
     }
 
 }

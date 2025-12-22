@@ -69,16 +69,19 @@ public class UIMgr : BaseManager<UIMgr>
     /// 用于存储所有的面板对象
     /// </summary>
     private Dictionary<string, BasePanelInfo> panelDic = new Dictionary<string, BasePanelInfo>();
+    // 资源加载路径
+    private string uiPanelPath = ResLoadSettings.Instance.GetUIPanelPath;
+    private static UIGeneratorSettings UISettings => UIGeneratorSettings.Instance;
 
     private UIMgr()
     {
         //动态创建唯一的Canvas和EventSystem（摄像机）
-        uiCamera = GameObject.Instantiate(ResMgr.Instance.Load<GameObject>("UI/UICamera")).GetComponent<Camera>();
+        uiCamera = GameObject.Instantiate(ResMgr.Instance.Load<GameObject>(UISettings.uiSystemUICameraPath)).GetComponent<Camera>();
         //ui摄像机过场景不移除 专门用来渲染UI面板
         GameObject.DontDestroyOnLoad(uiCamera.gameObject);
 
         //动态创建Canvas
-        uiCanvas = GameObject.Instantiate(ResMgr.Instance.Load<GameObject>("UI/Canvas")).GetComponent<Canvas>();
+        uiCanvas = GameObject.Instantiate(ResMgr.Instance.Load<GameObject>(UISettings.uiSystemRootPath)).GetComponent<Canvas>();
         //设置使用的UI摄像机
         uiCanvas.worldCamera = uiCamera;
         //过场景不移除
@@ -91,7 +94,7 @@ public class UIMgr : BaseManager<UIMgr>
         systemLayer = uiCanvas.transform.Find("System");
 
         //动态创建EventSystem
-        uiEventSystem = GameObject.Instantiate(ResMgr.Instance.Load<GameObject>("UI/EventSystem")).GetComponent<EventSystem>();
+        uiEventSystem = GameObject.Instantiate(ResMgr.Instance.Load<GameObject>(UISettings.uiSystemEventSystemPath)).GetComponent<EventSystem>();
         GameObject.DontDestroyOnLoad(uiEventSystem.gameObject);
     }
 
@@ -124,7 +127,7 @@ public class UIMgr : BaseManager<UIMgr>
     /// <param name="layer">面板显示的层级</param>
     /// <param name="callBack">由于可能是异步加载 因此通过委托回调的形式 将加载完成的面板传递出去进行使用</param>
     /// <param name="isSync">是否采用同步加载 默认为false</param>
-    public void ShowPanel<T>(E_UILayer layer = E_UILayer.Middle, UnityAction<T> callBack = null, bool isSync = false) where T:BasePanel
+    public void ShowPanel<T>(E_UILayer layer = E_UILayer.Middle, bool isSync = false, UnityAction<T> callBack = null) where T:BasePanel
     {
         //获取面板名 预设体名必须和面板类名一致 
         string panelName = typeof(T).Name;
@@ -161,7 +164,7 @@ public class UIMgr : BaseManager<UIMgr>
         panelDic.Add(panelName, new PanelInfo<T>(callBack));
 
         //不存在面板 加载面板
-        ABResMgr.Instance.LoadResAsync<GameObject>("ui", panelName, (res) =>
+        ResLoadMgr.Instance.LoadRes<GameObject>(uiPanelPath,panelName, (res) =>
         {
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;
