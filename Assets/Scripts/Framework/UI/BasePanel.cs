@@ -48,6 +48,11 @@ public abstract class BasePanel : MonoBehaviour
         FindChildrenControl<Image>();
     }
 
+    protected virtual void Start()
+    {
+
+    }
+
     /// <summary>
     /// 面板显示时会调用的逻辑
     /// </summary>
@@ -64,9 +69,9 @@ public abstract class BasePanel : MonoBehaviour
     /// <typeparam name="T">组件类型</typeparam>
     /// <param name="name">组件名字</param>
     /// <returns></returns>
-    public T GetControl<T>(string name) where T:UIBehaviour
+    public T GetControl<T>(string name) where T : UIBehaviour
     {
-        if(controlDic.ContainsKey(name))
+        if (controlDic.ContainsKey(name))
         {
             T control = controlDic[name] as T;
             if (control == null)
@@ -95,7 +100,7 @@ public abstract class BasePanel : MonoBehaviour
 
     }
 
-    private void FindChildrenControl<T>() where T:UIBehaviour
+    private void FindChildrenControl<T>() where T : UIBehaviour
     {
         T[] controls = this.GetComponentsInChildren<T>(true);
         for (int i = 0; i < controls.Length; i++)
@@ -105,25 +110,25 @@ public abstract class BasePanel : MonoBehaviour
             //通过这种方式 将对应组件记录到字典中
             if (!controlDic.ContainsKey(controlName))
             {
-                if(!defaultNameList.Contains(controlName))
+                if (!defaultNameList.Contains(controlName))
                 {
                     controlDic.Add(controlName, controls[i]);
                     //判断控件的类型 决定是否加事件监听
-                    if(controls[i] is Button)
+                    if (controls[i] is Button)
                     {
                         (controls[i] as Button).onClick.AddListener(() =>
                         {
                             ClickBtn(controlName);
                         });
                     }
-                    else if(controls[i] is Slider)
+                    else if (controls[i] is Slider)
                     {
                         (controls[i] as Slider).onValueChanged.AddListener((value) =>
                         {
                             SliderValueChange(controlName, value);
                         });
                     }
-                    else if(controls[i] is Toggle)
+                    else if (controls[i] is Toggle)
                     {
                         (controls[i] as Toggle).onValueChanged.AddListener((value) =>
                         {
@@ -131,7 +136,7 @@ public abstract class BasePanel : MonoBehaviour
                         });
                     }
                 }
-                    
+
             }
         }
     }
