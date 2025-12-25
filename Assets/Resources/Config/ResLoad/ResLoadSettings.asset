@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c31dbd9de6eb44e458aa29f1d56d0f5b, type: 3}
   m_Name: ResLoadSettings
   m_EditorClassIdentifier: 
-  resLoadType: 0
+  resLoadType: 1
   uiResourceLoadRootPath: UI/Panel
   uiABLoadRootPath: ui
   uiEditorLoadRootPath: Assets/ArtRes/UI/Panel

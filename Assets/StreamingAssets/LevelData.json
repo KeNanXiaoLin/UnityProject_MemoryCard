@@ -10,7 +10,7 @@
         "colCount": 2,
         "cardCount": 6,
         "cardWidth": 1.0,
-        "cardHeight": "1.5"
+        "cardHeight": 1.5
     },
     {
         "id": 1002,
@@ -23,7 +23,7 @@
         "colCount": 2,
         "cardCount": 8,
         "cardWidth": 1.0,
-        "cardHeight": "1.5"
+        "cardHeight": 1.5
     },
     {
         "id": 1003,
@@ -36,6 +36,6 @@
         "colCount": 3,
         "cardCount": 12,
         "cardWidth": 1.0,
-        "cardHeight": "1.5"
+        "cardHeight": 1.5
     }
 ]
