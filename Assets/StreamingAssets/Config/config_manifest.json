@@ -1,0 +1,133 @@
+{
+    "version": "1.0.0",
+    "generate_time": "2025-12-26 17:38:01",
+    "table_count": 2,
+    "tables": [
+        {
+            "table_name": "LevelData",
+            "class_name": "CfgLevelData",
+            "json_path": "LevelData.json",
+            "primary_key": "id",
+            "row_count": 3,
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "desc": "表的主键",
+                    "is_enum": false
+                },
+                {
+                    "name": "level",
+                    "type": "int",
+                    "desc": "当前的关卡",
+                    "is_enum": false
+                },
+                {
+                    "name": "startX",
+                    "type": "float",
+                    "desc": "这一关卡牌的开始位置X",
+                    "is_enum": false
+                },
+                {
+                    "name": "startY",
+                    "type": "float",
+                    "desc": "这一关卡牌的开始位置Y",
+                    "is_enum": false
+                },
+                {
+                    "name": "spacingX",
+                    "type": "float",
+                    "desc": "这一关两张卡牌X的间距",
+                    "is_enum": false
+                },
+                {
+                    "name": "spacingY",
+                    "type": "float",
+                    "desc": "这一关两张卡牌Y的间距",
+                    "is_enum": false
+                },
+                {
+                    "name": "rowCount",
+                    "type": "int",
+                    "desc": "这一关横向放置的数量",
+                    "is_enum": false
+                },
+                {
+                    "name": "colCount",
+                    "type": "int",
+                    "desc": "这一关纵向放置的数量",
+                    "is_enum": false
+                },
+                {
+                    "name": "cardCount",
+                    "type": "int",
+                    "desc": "这一关的卡牌总数，就是行*列",
+                    "is_enum": false
+                },
+                {
+                    "name": "cardWidth",
+                    "type": "float",
+                    "desc": "卡牌的长度",
+                    "is_enum": false
+                },
+                {
+                    "name": "cardHeight",
+                    "type": "float",
+                    "desc": "卡牌的宽度",
+                    "is_enum": false
+                }
+            ]
+        },
+        {
+            "table_name": "ResData",
+            "class_name": "CfgResData",
+            "json_path": "ResData.json",
+            "primary_key": "id",
+            "row_count": 8,
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "desc": "表的主键",
+                    "is_enum": false
+                },
+                {
+                    "name": "resName",
+                    "type": "string",
+                    "desc": "资源名字",
+                    "is_enum": false
+                },
+                {
+                    "name": "resDes",
+                    "type": "string",
+                    "desc": "资源描述",
+                    "is_enum": false
+                },
+                {
+                    "name": "resType",
+                    "type": "enum",
+                    "desc": "资源类型",
+                    "is_enum": true
+                },
+                {
+                    "name": "resPath",
+                    "type": "string",
+                    "desc": "资源的resources方式加载路径的path，相对于Resource/",
+                    "is_enum": false
+                },
+                {
+                    "name": "resEditorPath",
+                    "type": "string",
+                    "desc": "资源的Editor方式加载路径的path，相对于Assets",
+                    "is_enum": false
+                },
+                {
+                    "name": "resABPath",
+                    "type": "string",
+                    "desc": "资源的AB方式的包名",
+                    "is_enum": false
+                }
+            ]
+        }
+    ]
+}
