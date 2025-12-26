@@ -367,3 +367,6 @@ MigrationBackup/
 FodyWeavers.xsd
 *.csproj
 *.sln
+# Mac OS
+.DS_Store
+**/.DS_Store

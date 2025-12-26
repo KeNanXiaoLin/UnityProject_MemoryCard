@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MyFrameWork;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Main : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Main : MonoBehaviour
     {
         GameManager.Instance.Init();
         // UIMgr.Instance.ShowPanel<GameStartPanel>(isSync:true);
+
     }
 
 }
