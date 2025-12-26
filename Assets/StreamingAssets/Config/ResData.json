@@ -3,7 +3,7 @@
         "id": 1,
         "resName": "GameStartPanel",
         "resDes": "开始面板",
-        "resType": "",
+        "resType": 0,
         "resPath": "UI/Panel/GameStartPanel",
         "resEditorPath": "ArtRes/UI/Panel/GameStartPanel",
         "resABPath": "ui"
@@ -12,7 +12,7 @@
         "id": 10001,
         "resName": "Blue",
         "resDes": "蓝色材质",
-        "resType": "",
+        "resType": 4,
         "resPath": "Materials/Blue",
         "resEditorPath": "ArtRes/Materials/Blue",
         "resABPath": "Materials"
@@ -21,7 +21,7 @@
         "id": 10002,
         "resName": "Green",
         "resDes": "绿色材质",
-        "resType": "",
+        "resType": 5,
         "resPath": "Materials/Green",
         "resEditorPath": "ArtRes/Materials/Green",
         "resABPath": "Materials"
@@ -30,7 +30,7 @@
         "id": 10003,
         "resName": "Orange",
         "resDes": "橙色材质",
-        "resType": "",
+        "resType": 6,
         "resPath": "Materials/Orange",
         "resEditorPath": "ArtRes/Materials/Orange",
         "resABPath": "Materials"
@@ -39,7 +39,7 @@
         "id": 10004,
         "resName": "Pink",
         "resDes": "粉色材质",
-        "resType": "",
+        "resType": 7,
         "resPath": "Materials/Pink",
         "resEditorPath": "ArtRes/Materials/Pink",
         "resABPath": "Materials"
@@ -48,7 +48,7 @@
         "id": 10005,
         "resName": "Red",
         "resDes": "红色材质",
-        "resType": "",
+        "resType": 8,
         "resPath": "Materials/Red",
         "resEditorPath": "ArtRes/Materials/Red",
         "resABPath": "Materials"
@@ -57,7 +57,7 @@
         "id": 10006,
         "resName": "Yellow",
         "resDes": "黄色材质",
-        "resType": "",
+        "resType": 9,
         "resPath": "Materials/Yellow",
         "resEditorPath": "ArtRes/Materials/Yellow",
         "resABPath": "Materials"
@@ -66,7 +66,7 @@
         "id": 20001,
         "resName": "Card",
         "resDes": "卡牌预制体",
-        "resType": "",
+        "resType": 0,
         "resPath": "Prefabs/Card",
         "resEditorPath": "ArtRes/Prefabs/Card",
         "resABPath": "Prefabs"

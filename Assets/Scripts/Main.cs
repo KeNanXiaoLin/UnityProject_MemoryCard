@@ -12,6 +12,7 @@ public class Main : MonoBehaviour
         GameManager.Instance.Init();
         // UIMgr.Instance.ShowPanel<GameStartPanel>(isSync:true);
 
+
     }
 
 }

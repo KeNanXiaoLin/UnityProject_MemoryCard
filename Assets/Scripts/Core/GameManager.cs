@@ -50,6 +50,7 @@ public class GameManager : BaseManager<GameManager>
         {
             Debug.Log($"表名：{tableMeta.table_name}，数据行数：{tableMeta.row_count}");
         }
+        ResConfigManager.Instance.Init();
     }
 
     public void Init()
