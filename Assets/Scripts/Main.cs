@@ -9,10 +9,10 @@ public class Main : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        GameManager.Instance.Init();
+        // StartCoroutine(GameManager.Instance.Init());
         // UIMgr.Instance.ShowPanel<GameStartPanel>(isSync:true);
 
-
     }
+
 
 }

@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "generate_time": "2025-12-26 18:51:20",
+    "generate_time": "2025-12-26 21:56:19",
     "table_count": 2,
     "tables": [
         {
@@ -125,6 +125,12 @@
                     "name": "resABPath",
                     "type": "string",
                     "desc": "资源的AB方式的包名",
+                    "is_enum": false
+                },
+                {
+                    "name": "assetExtension",
+                    "type": "string",
+                    "desc": "资源的后缀",
                     "is_enum": false
                 }
             ]

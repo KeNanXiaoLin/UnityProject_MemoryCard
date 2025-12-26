@@ -13,7 +13,6 @@ public class GameLogic : MonoBehaviour
 
     // 新增：初始化动画完成标记（关键锁）
     private bool isInitAnimCompleted = false;
-    private string prefabLoadPath = "";
 
     public bool CanFlipNewCard
     {
@@ -26,13 +25,10 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-        prefabLoadPath = ResLoadSettings.Instance.GetPrefabPath;
-    }
 
-    void Start()
+    IEnumerator Start()
     {
+        yield return StartCoroutine(GameManager.Instance.Init());
         Init();
     }
 
@@ -50,7 +46,7 @@ public class GameLogic : MonoBehaviour
         // 加载卡牌逻辑不变
         for (int i = 0; i < GameManager.Instance.cardDatas.Count; i++)
         {
-            ResLoadMgr.Instance.LoadRes<GameObject>(prefabLoadPath,"Card",(res)=>
+            ResLoadMgr.Instance.LoadRes<GameObject>(20001,(res)=>
             {
                 Card card = GameObject.Instantiate(res).GetComponent<Card>();
                 card.Init(GameManager.Instance.cardDatas[i]);

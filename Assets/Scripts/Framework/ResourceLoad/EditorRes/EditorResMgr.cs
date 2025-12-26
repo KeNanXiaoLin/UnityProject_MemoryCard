@@ -40,6 +40,23 @@ public class EditorResMgr : BaseManager<EditorResMgr>
 #endif
     }
 
+    /// <summary>
+    /// 加载编辑器资源（无后缀名）
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    public T LoadEditorResWithoutSuffix<T>(string path) where T:Object
+    {
+#if UNITY_EDITOR
+        
+        T res = AssetDatabase.LoadAssetAtPath<T>(path);
+        return res;
+#else
+        return null;
+#endif
+    }
+
     //2.加载图集相关资源的
     public Sprite LoadSprite(string path, string spriteName)
     {

@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class GameManager : BaseManager<GameManager>
 {
-    public LevelData levelData;
+    public CfgLevelData levelData;
     // 现在的实现方式用不到这个字段
     // private List<Sprite> sprites;
-    private List<Material> materials;
+    private List<Material> materials = new();
     /// <summary>
     /// 当前的关卡
     /// </summary>
@@ -18,6 +18,10 @@ public class GameManager : BaseManager<GameManager>
     /// 当前关卡的牌组
     /// </summary>
     public List<CardData> cardDatas = new List<CardData>();
+    /// <summary>
+    /// 初始化游戏逻辑执行需要等待资源加载完毕
+    /// </summary>
+    private Coroutine initCoroutine;
 
     private GameManager()
     {
@@ -27,10 +31,9 @@ public class GameManager : BaseManager<GameManager>
         ConfigManager.Instance.SetLoadMode(ConfigLoadMode.PreloadAll);
 
         // 从清单自动加载所有表（无需指定表名）
-        MonoMgr.Instance.StartCoroutine(InitConfigFromManifest());
+        initCoroutine = MonoMgr.Instance.StartCoroutine(InitConfigFromManifest());
 
-        Material[] materials = ResMgr.Instance.LoadAll<Material>("Materials");
-        this.materials = new List<Material>(materials);
+        
 
     }
 
@@ -50,34 +53,45 @@ public class GameManager : BaseManager<GameManager>
         {
             Debug.Log($"表名：{tableMeta.table_name}，数据行数：{tableMeta.row_count}");
         }
-        ResConfigManager.Instance.Init();
+        
     }
 
-    public void Init()
+    public IEnumerator Init()
     {
+        // 等待配置加载完成
+        yield return initCoroutine;
+        ResConfigManager.Instance.Init();
+
+        for(int i = 10001;i<=10006;++i)
+        {
+            ResLoadMgr.Instance.LoadRes<Material>(i,(res)=>
+            {
+                materials.Add(res);
+            },true);
+        }
         //构建当前关卡的数据
-        //构建当前关卡的牌组,2个一组
-        // SingleLevelData levelData = this.levelData.GetLevelData(curLevel);
-        // int index = 0;
-        // for (int i = 0; i < levelData.rowCount; i++)
-        // {
-        //     for (int j = 0; j < levelData.colCount; j++)
-        //     {
-        //         index = i * levelData.colCount + j;
-        //         int id = index / 2;
-        //         Material material = materials[index / 2];
-        //         float x = levelData.startX + j * levelData.cardWidth + j * levelData.spacingX;
-        //         float y = levelData.startY - i * levelData.cardHeight - i * levelData.spacingY;
-        //         cardDatas.Add(new CardData(material, id, x, y));
-        //     }
-        // }
-        // Debug.Log("GameManager Init");
+        // 构建当前关卡的牌组,2个一组
+        this.levelData = ConfigManager.Instance.GetData<CfgLevelData>(curLevel);
+        int index = 0;
+        for (int i = 0; i < levelData.rowCount; i++)
+        {
+            for (int j = 0; j < levelData.colCount; j++)
+            {
+                index = i * levelData.colCount + j;
+                int id = index / 2;
+                Material material = materials[index / 2];
+                float x = levelData.startX + j * levelData.cardWidth + j * levelData.spacingX;
+                float y = levelData.startY - i * levelData.cardHeight - i * levelData.spacingY;
+                cardDatas.Add(new CardData(material, id, x, y));
+            }
+        }
+        yield return null;
+        Debug.Log("GameManager Init");
     }
 
     internal void GoToNextLevel()
     {
         cardDatas.Clear();
         curLevel++;
-        Init();
     }
 }

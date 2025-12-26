@@ -11,7 +11,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
     private ResLoadMgr() { }
 
     /// <summary>
-    /// 同步加载资源
+    /// 通过直接传入路径加载资源
     /// </summary>
     /// <typeparam name="T">资源类型</typeparam>
     /// <param name="resName">资源名称</param>
@@ -26,7 +26,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
             {
                 case E_ResLoadType.Editor:
                     resPath = resRootPath + "/" + resName;
-                    res = EditorResMgr.Instance.LoadEditorRes<T>(resPath);
+                    res = EditorResMgr.Instance.LoadEditorResWithoutSuffix<T>(resPath);
                     callBack?.Invoke(res);
                     break;
                 // 因为AB包不支持同步加载，所以这里使用Resource的方式进行加载
@@ -63,5 +63,57 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
         }
     }
 
+    private void LoadRes<T>(string resPath, UnityAction<T> callBack, bool isSync = false) where T : Object
+    {
+        T res = null;
+        if (isSync)
+        {
+            switch (Settings.resLoadType)
+            {
+                case E_ResLoadType.Editor:
+                    res = EditorResMgr.Instance.LoadEditorResWithoutSuffix<T>(resPath);
+                    callBack?.Invoke(res);
+                    break;
+                // 因为AB包不支持同步加载，所以这里使用Resource的方式进行加载
+                // case E_ResLoadType.AB:
+                //     ABMgr.Instance.LoadResAsync<T>(resRootPath, resName, callBack,true);
+                //     break;
+                case E_ResLoadType.Resources:
+                    res = ResMgr.Instance.Load<T>(resPath);
+                    callBack?.Invoke(res);
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            switch (Settings.resLoadType)
+            {
+                // case E_ResLoadType.Editor:
+                //     Debug.LogError($"异步加载资源{resName}失败，因为编辑器模式下不支持异步加载");
+                //     break;
+                // 因为AB包不支持同步加载，所以这里使用Resource的方式进行加载
+                // case E_ResLoadType.AB:
+                //     ABMgr.Instance.LoadResAsync<T>(resRootPath, resName, callBack,false);
+                //     break;
+                case E_ResLoadType.Resources:
+                    ResMgr.Instance.LoadAsync<T>(resPath, callBack);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
+    public void LoadRes<T>(int id,UnityAction<T> callBack, bool isSync = false) where T : Object
+    {
+        string resPath = ResConfigManager.Instance.GetResLoadPath(id);
+        if (string.IsNullOrEmpty(resPath))
+        {
+            Debug.LogError($"资源ID{id}对应的配置不存在");
+            return;
+        }
+        LoadRes<T>(resPath, callBack, isSync);
+    }
 }

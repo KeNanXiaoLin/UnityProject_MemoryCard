@@ -6,7 +6,8 @@
         "resType": 0,
         "resPath": "UI/Panel/GameStartPanel",
         "resEditorPath": "ArtRes/UI/Panel/GameStartPanel",
-        "resABPath": "ui"
+        "resABPath": "ui",
+        "assetExtension": "prefab"
     },
     {
         "id": 10001,
@@ -15,52 +16,58 @@
         "resType": 4,
         "resPath": "Materials/Blue",
         "resEditorPath": "ArtRes/Materials/Blue",
-        "resABPath": "Materials"
+        "resABPath": "Materials",
+        "assetExtension": "mat"
     },
     {
         "id": 10002,
         "resName": "Green",
         "resDes": "绿色材质",
-        "resType": 5,
+        "resType": 4,
         "resPath": "Materials/Green",
         "resEditorPath": "ArtRes/Materials/Green",
-        "resABPath": "Materials"
+        "resABPath": "Materials",
+        "assetExtension": "mat"
     },
     {
         "id": 10003,
         "resName": "Orange",
         "resDes": "橙色材质",
-        "resType": 6,
+        "resType": 4,
         "resPath": "Materials/Orange",
         "resEditorPath": "ArtRes/Materials/Orange",
-        "resABPath": "Materials"
+        "resABPath": "Materials",
+        "assetExtension": "mat"
     },
     {
         "id": 10004,
         "resName": "Pink",
         "resDes": "粉色材质",
-        "resType": 7,
+        "resType": 4,
         "resPath": "Materials/Pink",
         "resEditorPath": "ArtRes/Materials/Pink",
-        "resABPath": "Materials"
+        "resABPath": "Materials",
+        "assetExtension": "mat"
     },
     {
         "id": 10005,
         "resName": "Red",
         "resDes": "红色材质",
-        "resType": 8,
+        "resType": 4,
         "resPath": "Materials/Red",
         "resEditorPath": "ArtRes/Materials/Red",
-        "resABPath": "Materials"
+        "resABPath": "Materials",
+        "assetExtension": "mat"
     },
     {
         "id": 10006,
         "resName": "Yellow",
         "resDes": "黄色材质",
-        "resType": 9,
+        "resType": 4,
         "resPath": "Materials/Yellow",
         "resEditorPath": "ArtRes/Materials/Yellow",
-        "resABPath": "Materials"
+        "resABPath": "Materials",
+        "assetExtension": "mat"
     },
     {
         "id": 20001,
@@ -69,6 +76,7 @@
         "resType": 0,
         "resPath": "Prefabs/Card",
         "resEditorPath": "ArtRes/Prefabs/Card",
-        "resABPath": "Prefabs"
+        "resABPath": "Prefabs",
+        "assetExtension": "prefab"
     }
 ]
