@@ -25,20 +25,6 @@ public class ResLoadSettings : ScriptableObject
     [Header("资源加载配置")]
     [Tooltip("资源加载的方式")]
     public E_ResLoadType resLoadType = E_ResLoadType.Editor;
-    [Header("UI资源加载配置")]
-    [Tooltip("使用Resources资源加载根路径")]
-    public string uiResourceLoadRootPath = "UI/Panel";
-    [Tooltip("使用AB包资源加载根路径")]
-    public string uiABLoadRootPath = "ui";
-    [Tooltip("使用Editor模式加载资源根路径")]
-    public string uiEditorLoadRootPath = "Assets/ArtRes/UI/Panel";
-    [Header("预制体资源加载配置")]
-    [Tooltip("使用Resources资源加载预制体根路径")]
-    public string prefabResourceLoadRootPath = "Prefabs";
-    [Tooltip("使用AB包资源加载预制体根路径")]
-    public string prefabABLoadRootPath = "prefabs";
-    [Tooltip("使用Editor模式加载资源根路径")]
-    public string prefabEditorLoadRootPath = "Assets/ArtRes/Prefabs";
 
 
     /// <summary>
@@ -107,41 +93,4 @@ public class ResLoadSettings : ScriptableObject
     }
 #endif
 
-    public string GetUIPanelPath
-    {
-        get
-        {
-            switch (resLoadType)
-            {
-                case E_ResLoadType.Editor:
-                    return uiEditorLoadRootPath;
-                case E_ResLoadType.AB:
-                    return uiABLoadRootPath;
-                case E_ResLoadType.Resources:
-                    return uiResourceLoadRootPath;
-                default:
-                    Debug.LogError($"未定义的资源加载类型 {resLoadType}");
-                    return null;
-            }
-        }
-    }
-
-    public string GetPrefabPath
-    {
-        get
-        {
-            switch (resLoadType)
-            {
-                case E_ResLoadType.Editor:
-                    return prefabEditorLoadRootPath;
-                case E_ResLoadType.AB:
-                    return prefabABLoadRootPath;
-                case E_ResLoadType.Resources:
-                    return prefabResourceLoadRootPath;
-                default:
-                    Debug.LogError($"未定义的资源加载类型 {resLoadType}");
-                    return null;
-            }
-        }
-    }
 }

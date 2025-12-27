@@ -63,7 +63,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
         }
     }
 
-    private void LoadRes<T>(string resPath, UnityAction<T> callBack, bool isSync = false) where T : Object
+    private void ReallyLoadRes<T>(string resPath, UnityAction<T> callBack, bool isSync = false) where T : Object
     {
         T res = null;
         if (isSync)
@@ -106,14 +106,39 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
         }
     }
 
-    public void LoadRes<T>(int id,UnityAction<T> callBack, bool isSync = false) where T : Object
+    /// <summary>
+    /// 根据配置表的主键进行资源加载
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="primaryKey"></param>
+    /// <param name="callBack"></param>
+    /// <param name="isSync"></param>
+    public void LoadRes<T>(int primaryKey,UnityAction<T> callBack, bool isSync = false) where T : Object
     {
-        string resPath = ResConfigManager.Instance.GetResLoadPath(id);
+        string resPath = ResConfigManager.Instance.GetResLoadPath(primaryKey);
         if (string.IsNullOrEmpty(resPath))
         {
-            Debug.LogError($"资源ID{id}对应的配置不存在");
+            Debug.LogError($"资源ID{primaryKey}对应的配置不存在");
             return;
         }
-        LoadRes<T>(resPath, callBack, isSync);
+        ReallyLoadRes<T>(resPath, callBack, isSync);
+    }
+
+    /// <summary>
+    /// 根据配置表的资源名称进行资源加载
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="resName"></param>
+    /// <param name="callBack"></param>
+    /// <param name="isSync"></param>
+    public void LoadRes<T>(string resName,UnityAction<T> callBack, bool isSync = false) where T : Object
+    {
+        string resPath = ResConfigManager.Instance.GetResLoadPath(resName);
+        if (string.IsNullOrEmpty(resPath))
+        {
+            Debug.LogError($"资源名称{resName}对应的配置不存在");
+            return;
+        }
+        ReallyLoadRes<T>(resPath, callBack, isSync);
     }
 }

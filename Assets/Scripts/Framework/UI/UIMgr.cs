@@ -70,7 +70,6 @@ public class UIMgr : BaseManager<UIMgr>
     /// </summary>
     private Dictionary<string, BasePanelInfo> panelDic = new Dictionary<string, BasePanelInfo>();
     // 资源加载路径
-    private string uiPanelPath = ResLoadSettings.Instance.GetUIPanelPath;
     private static UIGeneratorSettings UISettings => UIGeneratorSettings.Instance;
 
     private UIMgr()
@@ -164,7 +163,7 @@ public class UIMgr : BaseManager<UIMgr>
         panelDic.Add(panelName, new PanelInfo<T>(callBack));
 
         //不存在面板 加载面板
-        ResLoadMgr.Instance.LoadRes<GameObject>(uiPanelPath,panelName, (res) =>
+        ResLoadMgr.Instance.LoadRes<GameObject>(panelName, (res) =>
         {
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;

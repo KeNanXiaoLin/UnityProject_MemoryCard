@@ -21,9 +21,9 @@ public class ResConfigManager : BaseManager<ResConfigManager>
     }
 
     /// <summary>
-    /// 按资源ID获取完整加载路径
+    /// 按资源主键获取完整加载路径
     /// </summary>
-    public string GetResLoadPath(int resID)
+    public string GetResLoadPath(int primaryKey)
     {
         if (_resConfigTable == null)
         {
@@ -31,7 +31,7 @@ public class ResConfigManager : BaseManager<ResConfigManager>
             return null;
         }
 
-        var config = _resConfigTable.GetData(resID);
+        var config = _resConfigTable.GetData(primaryKey);
         if (config == null) return null;
 
         // 根据当前加载模式拼接路径
@@ -56,6 +56,38 @@ public class ResConfigManager : BaseManager<ResConfigManager>
         }
     }
 
+    public string GetResLoadPath(string resName)
+    {
+        if (_resConfigTable == null)
+        {
+            Debug.LogError("资源配置未初始化，请先调用Init()");
+            return null;
+        }
+
+        var config = _resConfigTable.FindFirst(x => x.resName == resName);
+        if (config == null) return null;
+
+        // 根据当前加载模式拼接路径
+        string rootPath = string.Empty;
+        switch (_currentLoadType)
+        {
+            case E_ResLoadType.Editor:
+                rootPath = "Assets/";
+                // 编辑器模式：拼接根路径+ABPath（ABPath已包含子路径）+扩展名
+                return Path.Combine(rootPath, config.resEditorPath) + "." + config.assetExtension;
+            case E_ResLoadType.Resources:
+                rootPath = config.resPath;
+                // Resources模式：无需扩展名（Resources.Load自动识别），无需Resources目录
+                return rootPath;
+            case E_ResLoadType.AB:
+                // AB包模式：返回AB包名（加载AB包）+ 包内路径
+                // 这里可返回ABName或拼接ABName+ABPath，根据你的AB加载逻辑调整
+                return config.resABPath;
+            default:
+                Debug.LogError($"未知加载模式：{_currentLoadType}");
+                return null;
+        }
+    }
     // /// <summary>
     // /// 获取资源的AB包信息（AB包模式专用）
     // /// </summary>

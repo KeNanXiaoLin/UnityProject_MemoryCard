@@ -1,6 +1,6 @@
 {
     "version": "1.0.0",
-    "generate_time": "2025-12-26 21:56:19",
+    "generate_time": "2025-12-27 13:21:25",
     "table_count": 2,
     "tables": [
         {
@@ -49,13 +49,13 @@
                 {
                     "name": "rowCount",
                     "type": "int",
-                    "desc": "这一关横向放置的数量",
+                    "desc": "这一关卡牌的行数",
                     "is_enum": false
                 },
                 {
                     "name": "colCount",
                     "type": "int",
-                    "desc": "这一关纵向放置的数量",
+                    "desc": "这一关卡牌的列数",
                     "is_enum": false
                 },
                 {
@@ -74,6 +74,12 @@
                     "name": "cardHeight",
                     "type": "float",
                     "desc": "卡牌的宽度",
+                    "is_enum": false
+                },
+                {
+                    "name": "camSize",
+                    "type": "float",
+                    "desc": "当前关卡主摄像机的size属性",
                     "is_enum": false
                 }
             ]

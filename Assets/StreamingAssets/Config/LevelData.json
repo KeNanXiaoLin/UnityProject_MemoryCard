@@ -2,40 +2,43 @@
     {
         "id": 1,
         "level": 1,
-        "startX": -5.0,
-        "startY": 5.0,
+        "startX": -1.5,
+        "startY": 2.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
-        "rowCount": 3,
-        "colCount": 2,
+        "rowCount": 2,
+        "colCount": 3,
         "cardCount": 6,
         "cardWidth": 1.0,
-        "cardHeight": 1.5
+        "cardHeight": 1.5,
+        "camSize": 2.0
     },
     {
         "id": 2,
         "level": 2,
-        "startX": -5.0,
-        "startY": 5.0,
+        "startX": -1.5,
+        "startY": 2.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
-        "rowCount": 4,
-        "colCount": 2,
+        "rowCount": 2,
+        "colCount": 4,
         "cardCount": 8,
         "cardWidth": 1.0,
-        "cardHeight": 1.5
+        "cardHeight": 1.5,
+        "camSize": 3.0
     },
     {
         "id": 3,
         "level": 3,
-        "startX": -5.0,
-        "startY": 5.0,
+        "startX": -1.5,
+        "startY": 2.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
-        "rowCount": 4,
-        "colCount": 3,
+        "rowCount": 3,
+        "colCount": 4,
         "cardCount": 12,
         "cardWidth": 1.0,
-        "cardHeight": 1.5
+        "cardHeight": 1.5,
+        "camSize": 3.0
     }
 ]

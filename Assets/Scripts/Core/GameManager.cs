@@ -30,37 +30,14 @@ public class GameManager : BaseManager<GameManager>
         ConfigManager.Instance.SetJsonRootPath(ConfigPathType.StreamingAssets, "Config");
         ConfigManager.Instance.SetLoadMode(ConfigLoadMode.PreloadAll);
 
-        // 从清单自动加载所有表（无需指定表名）
-        initCoroutine = MonoMgr.Instance.StartCoroutine(InitConfigFromManifest());
 
-        
-
-    }
-
-    private IEnumerator InitConfigFromManifest()
-    {
-        // 核心：仅需加载清单，自动加载所有表
-        yield return ConfigManager.Instance.InitFromManifest();
-
-        // 任意查询配置（无需关心表是否手动加载）
-        var levelData = ConfigManager.Instance.GetData<CfgLevelData>(1001);
-
-        Debug.Log($"关卡行数：{levelData?.rowCount}");
-
-        // 打印所有表信息
-        var manifest = ConfigManager.Instance.GetConfigManifest();
-        foreach (var tableMeta in manifest.tables)
-        {
-            Debug.Log($"表名：{tableMeta.table_name}，数据行数：{tableMeta.row_count}");
-        }
-        
-    }
-
-    public IEnumerator Init()
-    {
-        // 等待配置加载完成
-        yield return initCoroutine;
+        // 初始化同步加载所有的表
+        ConfigManager.Instance.InitSyncFromManifest();
+        //等表加载完成后 初始化资源配置管理器
         ResConfigManager.Instance.Init();
+
+        // 从清单自动加载所有表（无需指定表名）
+        // initCoroutine = MonoMgr.Instance.StartCoroutine(InitConfigFromManifest());
 
         for(int i = 10001;i<=10006;++i)
         {
@@ -69,9 +46,23 @@ public class GameManager : BaseManager<GameManager>
                 materials.Add(res);
             },true);
         }
+
+    }
+
+    private IEnumerator InitConfigFromManifest()
+    {
+        // 核心：仅需加载清单，自动加载所有表
+        yield return ConfigManager.Instance.InitFromManifestCoroutine();
+        
+    }
+
+    public void Init()
+    {
         //构建当前关卡的数据
         // 构建当前关卡的牌组,2个一组
         this.levelData = ConfigManager.Instance.GetData<CfgLevelData>(curLevel);
+        //设置相机的size
+        Camera.main.orthographicSize = levelData.camSize;
         int index = 0;
         for (int i = 0; i < levelData.rowCount; i++)
         {
@@ -85,7 +76,6 @@ public class GameManager : BaseManager<GameManager>
                 cardDatas.Add(new CardData(material, id, x, y));
             }
         }
-        yield return null;
         Debug.Log("GameManager Init");
     }
 
@@ -93,5 +83,10 @@ public class GameManager : BaseManager<GameManager>
     {
         cardDatas.Clear();
         curLevel++;
+        if(curLevel>ConfigManager.Instance.GetTable<CfgLevelData>().Count)
+        {
+            curLevel = 1;
+        }
+        Init();
     }
 }

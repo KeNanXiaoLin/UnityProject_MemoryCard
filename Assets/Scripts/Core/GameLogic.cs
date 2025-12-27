@@ -26,9 +26,9 @@ public class GameLogic : MonoBehaviour
     }
 
 
-    IEnumerator Start()
+    void Start()
     {
-        yield return StartCoroutine(GameManager.Instance.Init());
+        GameManager.Instance.Init();
         Init();
     }
 
