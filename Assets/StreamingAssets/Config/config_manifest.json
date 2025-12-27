@@ -1,14 +1,83 @@
 {
     "version": "1.0.0",
-    "generate_time": "2025-12-27 13:21:25",
-    "table_count": 2,
+    "generate_time": "2025-12-27 20:52:32",
+    "table_count": 3,
     "tables": [
+        {
+            "table_name": "EnemyData",
+            "class_name": "CfgEnemyData",
+            "json_path": "EnemyData.json",
+            "primary_key": "id",
+            "row_count": 2,
+            "fields": [
+                {
+                    "name": "id",
+                    "type": "int",
+                    "desc": "主键",
+                    "is_enum": false
+                },
+                {
+                    "name": "hp",
+                    "type": "float",
+                    "desc": "血量",
+                    "is_enum": false
+                },
+                {
+                    "name": "moveSpeed",
+                    "type": "float",
+                    "desc": 11,
+                    "is_enum": false
+                },
+                {
+                    "name": "roundSpeed",
+                    "type": "float",
+                    "desc": 22,
+                    "is_enum": false
+                },
+                {
+                    "name": "isLook",
+                    "type": "bool",
+                    "desc": 33,
+                    "is_enum": false
+                },
+                {
+                    "name": "name",
+                    "type": "string",
+                    "desc": 44,
+                    "is_enum": false
+                },
+                {
+                    "name": "testInt",
+                    "type": "List[int]",
+                    "desc": 55,
+                    "is_enum": false
+                },
+                {
+                    "name": "testString",
+                    "type": "List[string]",
+                    "desc": 66,
+                    "is_enum": false
+                },
+                {
+                    "name": "testFloat",
+                    "type": "List[float]",
+                    "desc": 77,
+                    "is_enum": false
+                },
+                {
+                    "name": "type",
+                    "type": "enum",
+                    "desc": 88,
+                    "is_enum": true
+                }
+            ]
+        },
         {
             "table_name": "LevelData",
             "class_name": "CfgLevelData",
             "json_path": "LevelData.json",
             "primary_key": "id",
-            "row_count": 3,
+            "row_count": 4,
             "fields": [
                 {
                     "name": "id",

@@ -34,11 +34,25 @@
         "startY": 2.0,
         "spacingX": 0.2,
         "spacingY": 0.2,
+        "rowCount": 2,
+        "colCount": 5,
+        "cardCount": 10,
+        "cardWidth": 1.0,
+        "cardHeight": 1.5,
+        "camSize": 3.0
+    },
+    {
+        "id": 4,
+        "level": 4,
+        "startX": -1.5,
+        "startY": 2.0,
+        "spacingX": 0.2,
+        "spacingY": 0.2,
         "rowCount": 3,
         "colCount": 4,
         "cardCount": 12,
         "cardWidth": 1.0,
         "cardHeight": 1.5,
-        "camSize": 3.0
+        "camSize": 4.0
     }
 ]

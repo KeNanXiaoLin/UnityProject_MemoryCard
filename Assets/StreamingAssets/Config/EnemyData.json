@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1001,
+        "hp": 100.0,
+        "moveSpeed": 5.0,
+        "roundSpeed": 5.0,
+        "isLook": true,
+        "name": "小怪",
+        "testInt": "1,2,3",
+        "testString": "1.1,1.2,1.3",
+        "testFloat": "az,sd,zd",
+        "type": ""
+    },
+    {
+        "id": 1002,
+        "hp": 1000.0,
+        "moveSpeed": 10.0,
+        "roundSpeed": 10.0,
+        "isLook": true,
+        "name": "Boss",
+        "testInt": "1,2,3,4",
+        "testString": "1.1,1.2,1.3",
+        "testFloat": "az,sd,zd",
+        "type": ""
+    }
+]
