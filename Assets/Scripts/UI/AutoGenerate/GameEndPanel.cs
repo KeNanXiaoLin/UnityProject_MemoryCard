@@ -54,7 +54,8 @@ namespace MyFrameWork
 
 		private void OnbtnReturnButtonClick()
 		{
-
+			UIMgr.Instance.HidePanel<GameEndPanel>();
+			UIMgr.Instance.ShowPanel<GameStartPanel>();
 		}
 
 		// 留给新增的组件事件绑定函数

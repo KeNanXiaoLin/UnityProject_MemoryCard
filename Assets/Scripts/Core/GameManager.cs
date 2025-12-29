@@ -24,39 +24,32 @@ public class GameManager : BaseManager<GameManager>
     /// </summary>
     private Coroutine initCoroutine;
 
-    private GameManager()
+    private GameManager(){}
+
+    public void LoadConfig()
     {
-        // levelData = new LevelData();
         // 初始化配置管理器
         ConfigManager.Instance.SetJsonRootPath(ConfigPathType.StreamingAssets, "Config");
         ConfigManager.Instance.SetLoadMode(ConfigLoadMode.PreloadAll);
-
 
         // 初始化同步加载所有的表
         ConfigManager.Instance.InitSyncFromManifest();
         //等表加载完成后 初始化资源配置管理器
         ResConfigManager.Instance.Init();
 
-        // 从清单自动加载所有表（无需指定表名）
-        // initCoroutine = MonoMgr.Instance.StartCoroutine(InitConfigFromManifest());
-
-        for(int i = 10001;i<=10006;++i)
+        // 加载显示卡牌需要用到的材质
+        for(int i = 10001;i<=10012;++i)
         {
             ResLoadMgr.Instance.LoadRes<Material>(i,(res)=>
             {
                 materials.Add(res);
             },true);
         }
-
     }
 
-    private IEnumerator InitConfigFromManifest()
-    {
-        // 核心：仅需加载清单，自动加载所有表
-        yield return ConfigManager.Instance.InitFromManifestCoroutine();
-        
-    }
-
+    /// <summary>
+    /// 初始化当前关卡的数据
+    /// </summary>
     public void Init()
     {
         //构建当前关卡的数据
@@ -77,10 +70,9 @@ public class GameManager : BaseManager<GameManager>
                 cardDatas.Add(new CardData(material, id, x, y));
             }
         }
-        Debug.Log("GameManager Init");
     }
 
-    internal void GoToNextLevel()
+    public void GoToNextLevel()
     {
         cardDatas.Clear();
         curLevel++;
@@ -89,5 +81,11 @@ public class GameManager : BaseManager<GameManager>
             curLevel = 1;
         }
         Init();
+    }
+
+    public void StartGame()
+    {
+        GameObject obj = new GameObject("GameLogic");
+        GameLogic gameLogic = obj.AddComponent<GameLogic>();
     }
 }

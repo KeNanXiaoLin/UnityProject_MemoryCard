@@ -48,16 +48,17 @@ namespace MyFrameWork
 		public override void HideMe()
 		{
 			//自己手写的HideMe逻辑，不会被覆盖
-			this.gameObject.SetActive(false);
+			// this.gameObject.SetActive(false);
 		}
 
 		private void OnbtnStartButtonClick()
 		{
 			//自己手写的OnbtnStartButtonClick逻辑，不会被覆盖
-			// Debug.Log("OnbtnStartButtonClick");
-			// UIMgr.Instance.HidePanel<GameStartPanel>();
-			this.HideMe();
-			gameLogic.SetActive(true);
+			//开始游戏,先初始化数据，在创建游戏逻辑组件
+			GameManager.Instance.Init();
+			GameManager.Instance.StartGame();
+			UIMgr.Instance.HidePanel<GameStartPanel>();
+			//显示游戏UI面板
 		}
 
 		private void OnbtnOptionsButtonClick()

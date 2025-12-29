@@ -13,9 +13,3 @@ MonoBehaviour:
   m_Name: ResLoadSettings
   m_EditorClassIdentifier: 
   resLoadType: 0
-  uiResourceLoadRootPath: UI/Panel
-  uiABLoadRootPath: ui
-  uiEditorLoadRootPath: Assets/ArtRes/UI/Panel
-  prefabResourceLoadRootPath: Prefabs
-  prefabABLoadRootPath: prefabs
-  prefabEditorLoadRootPath: Assets/ArtRes/Prefabs

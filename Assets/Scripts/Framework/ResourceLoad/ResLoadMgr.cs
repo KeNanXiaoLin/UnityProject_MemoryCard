@@ -16,7 +16,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
     /// <typeparam name="T">资源类型</typeparam>
     /// <param name="resName">资源名称</param>
     /// <returns>加载到的资源</returns>
-    public void LoadRes<T>(string resRootPath,string resName, UnityAction<T> callBack, bool isSync = false) where T : Object
+    public void LoadRes<T>(string resRootPath,string resName, UnityAction<T> callBack, bool isSync = true) where T : Object
     {
         T res = null;
         string resPath = "";
@@ -63,7 +63,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
         }
     }
 
-    private void ReallyLoadRes<T>(string resPath, UnityAction<T> callBack, bool isSync = false) where T : Object
+    private void ReallyLoadRes<T>(string resPath, UnityAction<T> callBack, bool isSync = true) where T : Object
     {
         T res = null;
         if (isSync)
@@ -113,7 +113,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
     /// <param name="primaryKey"></param>
     /// <param name="callBack"></param>
     /// <param name="isSync"></param>
-    public void LoadRes<T>(int primaryKey,UnityAction<T> callBack, bool isSync = false) where T : Object
+    public void LoadRes<T>(int primaryKey,UnityAction<T> callBack, bool isSync = true) where T : Object
     {
         string resPath = ResConfigManager.Instance.GetResLoadPath(primaryKey);
         if (string.IsNullOrEmpty(resPath))
@@ -131,7 +131,7 @@ public class ResLoadMgr : BaseManager<ResLoadMgr>
     /// <param name="resName"></param>
     /// <param name="callBack"></param>
     /// <param name="isSync"></param>
-    public void LoadRes<T>(string resName,UnityAction<T> callBack, bool isSync = false) where T : Object
+    public void LoadRes<T>(string resName,UnityAction<T> callBack, bool isSync = true) where T : Object
     {
         string resPath = ResConfigManager.Instance.GetResLoadPath(resName);
         if (string.IsNullOrEmpty(resPath))

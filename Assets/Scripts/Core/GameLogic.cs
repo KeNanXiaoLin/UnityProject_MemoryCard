@@ -28,7 +28,6 @@ public class GameLogic : MonoBehaviour
 
     void Start()
     {
-        GameManager.Instance.Init();
         Init();
     }
 
@@ -153,6 +152,12 @@ public class GameLogic : MonoBehaviour
     {
         if (cards.Count == 0)
         {
+            // 播放通关特效
+            ResLoadMgr.Instance.LoadRes<GameObject>(30001,(res)=>
+            {
+                GameObject.Instantiate(res);
+            },true);
+            // 显示通关面板，目前没有通关面板，直接跳转下一关
             // 通关前先锁定点击，避免动画过程中重复触发
             isInitAnimCompleted = false;
             GameManager.Instance.GoToNextLevel();
