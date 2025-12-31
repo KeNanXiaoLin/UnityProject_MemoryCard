@@ -22,7 +22,7 @@ public class ABResMgr : BaseManager<ABResMgr>
         if(isDebug)
         {
             //我们自定义了一个AB包中资源的管理方式 对应文件夹名 就是包名 
-            T res = EditorResMgr.Instance.LoadEditorRes<T>($"{abName}/{resName}");
+            T res = EditorResMgr.Instance.LoadEditorResWithoutSuffix<T>($"{abName}/{resName}");
             callBack?.Invoke(res as T);
         }
         else

@@ -13,7 +13,6 @@ public class GameLogic : MonoBehaviour
 
     // 新增：初始化动画完成标记（关键锁）
     private bool isInitAnimCompleted = false;
-    private string prefabLoadPath = "";
 
     public bool CanFlipNewCard
     {
@@ -26,10 +25,6 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-        prefabLoadPath = ResLoadSettings.Instance.GetPrefabPath;
-    }
 
     void Start()
     {
@@ -50,7 +45,7 @@ public class GameLogic : MonoBehaviour
         // 加载卡牌逻辑不变
         for (int i = 0; i < GameManager.Instance.cardDatas.Count; i++)
         {
-            ResLoadMgr.Instance.LoadRes<GameObject>(prefabLoadPath,"Card",(res)=>
+            ResLoadMgr.Instance.LoadRes<GameObject>(20001,(res)=>
             {
                 Card card = GameObject.Instantiate(res).GetComponent<Card>();
                 card.Init(GameManager.Instance.cardDatas[i]);
@@ -157,6 +152,12 @@ public class GameLogic : MonoBehaviour
     {
         if (cards.Count == 0)
         {
+            // 播放通关特效
+            ResLoadMgr.Instance.LoadRes<GameObject>(30001,(res)=>
+            {
+                GameObject.Instantiate(res);
+            },true);
+            // 显示通关面板，目前没有通关面板，直接跳转下一关
             // 通关前先锁定点击，避免动画过程中重复触发
             isInitAnimCompleted = false;
             GameManager.Instance.GoToNextLevel();

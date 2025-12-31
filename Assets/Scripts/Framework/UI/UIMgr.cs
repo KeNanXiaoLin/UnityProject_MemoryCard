@@ -70,7 +70,6 @@ public class UIMgr : BaseManager<UIMgr>
     /// </summary>
     private Dictionary<string, BasePanelInfo> panelDic = new Dictionary<string, BasePanelInfo>();
     // 资源加载路径
-    private string uiPanelPath = ResLoadSettings.Instance.GetUIPanelPath;
     private static UIGeneratorSettings UISettings => UIGeneratorSettings.Instance;
 
     private UIMgr()
@@ -127,7 +126,7 @@ public class UIMgr : BaseManager<UIMgr>
     /// <param name="layer">面板显示的层级</param>
     /// <param name="callBack">由于可能是异步加载 因此通过委托回调的形式 将加载完成的面板传递出去进行使用</param>
     /// <param name="isSync">是否采用同步加载 默认为false</param>
-    public void ShowPanel<T>(E_UILayer layer = E_UILayer.Middle, bool isSync = false, UnityAction<T> callBack = null) where T:BasePanel
+    public void ShowPanel<T>(E_UILayer layer = E_UILayer.Middle, bool isSync = true, UnityAction<T> callBack = null) where T:BasePanel
     {
         //获取面板名 预设体名必须和面板类名一致 
         string panelName = typeof(T).Name;
@@ -164,7 +163,7 @@ public class UIMgr : BaseManager<UIMgr>
         panelDic.Add(panelName, new PanelInfo<T>(callBack));
 
         //不存在面板 加载面板
-        ResLoadMgr.Instance.LoadRes<GameObject>(uiPanelPath,panelName, (res) =>
+        ResLoadMgr.Instance.LoadRes<GameObject>(panelName, (res) =>
         {
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;
