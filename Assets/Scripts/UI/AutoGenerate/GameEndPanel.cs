@@ -49,7 +49,7 @@ namespace MyFrameWork
 
 		private void OnbtnExicButtonClick()
 		{
-
+			Application.Quit();
 		}
 
 		private void OnbtnReturnButtonClick()
