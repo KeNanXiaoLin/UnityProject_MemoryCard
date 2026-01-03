@@ -655,9 +655,7 @@ GameObject:
   - component: {fileID: 3756096404175795214}
   - component: {fileID: 323231311468058331}
   - component: {fileID: 8822196509417882364}
-  - component: {fileID: 6690354045284420672}
-  - component: {fileID: 3296764153367907937}
-  - component: {fileID: 6247436896297908443}
+  - component: {fileID: 721742020314591753}
   m_Layer: 5
   m_Name: LevelPassPanel
   m_TagString: Untagged
@@ -706,7 +704,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4641509, g: 0.35292983, b: 0.35292983, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -723,7 +721,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6690354045284420672
+--- !u!114 &721742020314591753
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -732,42 +730,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5960501394255050003}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55c8d68c41313d5429513ffb94e4eff8, type: 3}
+  m_Script: {fileID: 11500000, guid: 66c6d451057e17a449bb39e12e600423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btnStart: {fileID: 0}
-  btnOptions: {fileID: 0}
-  btnQuit: {fileID: 0}
-  gameLogic: {fileID: 0}
---- !u!114 &3296764153367907937
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5960501394255050003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23c4343cd756c9e418c593bcf0a402f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tmpTime: {fileID: 0}
-  tmpStep: {fileID: 0}
-  btnInfo: {fileID: 0}
-  btnMute: {fileID: 0}
-  btnHome: {fileID: 0}
---- !u!114 &6247436896297908443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5960501394255050003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f65c46da1e4a3dd4f9ea7f315d74e288, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  enableShowAnimation: 1
+  enableHideAnimation: 1
+  animationDuration: 0.3
+  animationEase: 6
   tmpTime: {fileID: 969299467171151792}
   tmpStep: {fileID: 8443602437619705478}
   tmpLevelIndex: {fileID: 3626490254189079394}

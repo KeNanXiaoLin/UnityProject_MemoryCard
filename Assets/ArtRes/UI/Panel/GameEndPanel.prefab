@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 5066409824642514934}
   - component: {fileID: 942786071685565838}
   - component: {fileID: 6661942096452145021}
-  - component: {fileID: 7738536765382181807}
+  - component: {fileID: 4408045895874280021}
   m_Layer: 5
   m_Name: GameEndPanel
   m_TagString: Untagged
@@ -281,7 +281,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7251555614771745090}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -334,7 +334,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7738536765382181807
+--- !u!114 &4408045895874280021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -343,9 +343,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7251555614771745090}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 251538bb6b1c55f438ddd939c9e6f3de, type: 3}
+  m_Script: {fileID: 11500000, guid: ce64e416dd06ade41b8b377be4f5e85c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableShowAnimation: 1
+  enableHideAnimation: 1
+  animationDuration: 0.3
+  animationEase: 6
   btnExic: {fileID: 2772312513214657124}
   btnReturn: {fileID: 970872001077591598}
 --- !u!1 &7483231962767065520

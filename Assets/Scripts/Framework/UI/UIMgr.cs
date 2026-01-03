@@ -42,7 +42,7 @@ public class UIMgr : BaseManager<UIMgr>
     /// 用于存储面板信息 和加载完成的回调函数的
     /// </summary>
     /// <typeparam name="T">面板的类型</typeparam>
-    private class PanelInfo<T> : BasePanelInfo where T:BasePanel
+    private class PanelInfo<T> : BasePanelInfo where T : BasePanel
     {
         public T panel;
         public UnityAction<T> callBack;
@@ -126,17 +126,17 @@ public class UIMgr : BaseManager<UIMgr>
     /// <param name="layer">面板显示的层级</param>
     /// <param name="callBack">由于可能是异步加载 因此通过委托回调的形式 将加载完成的面板传递出去进行使用</param>
     /// <param name="isSync">是否采用同步加载 默认为false</param>
-    public void ShowPanel<T>(E_UILayer layer = E_UILayer.Middle, bool isSync = true, UnityAction<T> callBack = null) where T:BasePanel
+    public void ShowPanel<T>(E_UILayer layer = E_UILayer.Middle, E_ShowAnimType showAnimType = E_ShowAnimType.None, bool isSync = true, UnityAction<T> callBack = null) where T : BasePanel
     {
         //获取面板名 预设体名必须和面板类名一致 
         string panelName = typeof(T).Name;
         //存在面板
-        if(panelDic.ContainsKey(panelName))
+        if (panelDic.ContainsKey(panelName))
         {
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;
             //正在异步加载中
-            if(panelInfo.panel == null)
+            if (panelInfo.panel == null)
             {
                 //如果之前显示了又隐藏 现在又想显示 那么直接设为false
                 panelInfo.isHide = false;
@@ -152,9 +152,59 @@ public class UIMgr : BaseManager<UIMgr>
                     panelInfo.panel.gameObject.SetActive(true);
 
                 //如果要显示面板 会执行一次面板的默认显示逻辑
-                panelInfo.panel.ShowMe();
-                //如果存在回调 直接返回出去即可
-                callBack?.Invoke(panelInfo.panel);
+                // 播放显示动画
+                switch (showAnimType)
+                {
+                    case E_ShowAnimType.None:
+                        panelInfo.panel.ShowMe(() =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                    case E_ShowAnimType.FadeIn:
+                        panelInfo.panel.ShowWithFade(() =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                    case E_ShowAnimType.ScaleIn:
+                        panelInfo.panel.ShowWithScale(callback: () =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                    case E_ShowAnimType.SlideInFromTop:
+                        panelInfo.panel.ShowFromTop(callback: () =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                    case E_ShowAnimType.SlideInFromBottom:
+                        panelInfo.panel.ShowFromBottom(callback: () =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                    case E_ShowAnimType.SlideInFromLeft:
+                        panelInfo.panel.ShowFromLeft(callback: () =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                    case E_ShowAnimType.SlideInFromRight:
+                        panelInfo.panel.ShowFromRight(callback: () =>
+                        {
+                            //如果存在回调 直接返回出去即可
+                            callBack?.Invoke(panelInfo.panel);
+                        });
+                        break;
+                }
             }
             return;
         }
@@ -168,7 +218,7 @@ public class UIMgr : BaseManager<UIMgr>
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;
             //表示异步加载结束前 就想要隐藏该面板了 
-            if(panelInfo.isHide)
+            if (panelInfo.isHide)
             {
                 panelDic.Remove(panelName);
                 return;
@@ -185,9 +235,59 @@ public class UIMgr : BaseManager<UIMgr>
             //获取对应UI组件返回出去
             T panel = panelObj.GetComponent<T>();
             //显示面板时执行的默认方法
-            panel.ShowMe();
-            //传出去使用
-            panelInfo.callBack?.Invoke(panel);
+            // 播放显示动画
+            switch (showAnimType)
+            {
+                case E_ShowAnimType.None:
+                    panel.ShowMe(() =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+                case E_ShowAnimType.FadeIn:
+                    panel.ShowWithFade(callback: () =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+                case E_ShowAnimType.ScaleIn:
+                    panel.ShowWithScale(callback: () =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+                case E_ShowAnimType.SlideInFromTop:
+                    panel.ShowFromTop(callback: () =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+                case E_ShowAnimType.SlideInFromBottom:
+                    panel.ShowFromBottom(callback: () =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+                case E_ShowAnimType.SlideInFromLeft:
+                    panel.ShowFromLeft(callback: () =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+                case E_ShowAnimType.SlideInFromRight:
+                    panel.ShowFromRight(callback: () =>
+                    {
+                        //如果存在回调 直接返回出去即可
+                        callBack?.Invoke(panel);
+                    });
+                    break;
+            }
             //回调执行完 将其清空 避免内存泄漏
             panelInfo.callBack = null;
             //存储panel
@@ -200,7 +300,7 @@ public class UIMgr : BaseManager<UIMgr>
     /// 隐藏面板
     /// </summary>
     /// <typeparam name="T">面板类型</typeparam>
-    public void HidePanel<T>(bool isDestory = false) where T : BasePanel
+    public void HidePanel<T>(E_HideAnimType hideAnimType = E_HideAnimType.None, bool isDestory = false, UnityAction callBack = null) where T : BasePanel
     {
         string panelName = typeof(T).Name;
         if (panelDic.ContainsKey(panelName))
@@ -208,7 +308,7 @@ public class UIMgr : BaseManager<UIMgr>
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;
             //但是正在加载中
-            if(panelInfo.panel == null)
+            if (panelInfo.panel == null)
             {
                 //修改隐藏表示 表示 这个面板即将要隐藏
                 panelInfo.isHide = true;
@@ -217,28 +317,78 @@ public class UIMgr : BaseManager<UIMgr>
             }
             else//已经加载结束
             {
-                //执行默认的隐藏面板想要做的事情
-                panelInfo.panel.HideMe();
-                //如果要销毁  就直接将面板销毁从字典中移除记录
-                if (isDestory)
+                // 播放隐藏动画
+                switch (hideAnimType)
                 {
-                    //销毁面板
-                    GameObject.Destroy(panelInfo.panel.gameObject);
-                    //从容器中移除
-                    panelDic.Remove(panelName);
+                    case E_HideAnimType.None:
+                        panelInfo.panel.HideMe(() =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
+                    case E_HideAnimType.FadeOut:
+                        panelInfo.panel.HideWithFade(() =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
+                    case E_HideAnimType.ScaleOut:
+                        panelInfo.panel.HideWithScale(callback: () =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
+                    case E_HideAnimType.SlideOutToTop:
+                        panelInfo.panel.HideToTop(callback: () =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
+                    case E_HideAnimType.SlideOutToBottom:
+                        panelInfo.panel.HideToBottom(callback: () =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
+                    case E_HideAnimType.SlideOutToLeft:
+                        panelInfo.panel.HideToLeft(callback: () =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
+                    case E_HideAnimType.SlideOutToRight:
+                        panelInfo.panel.HideToRight(callback: () =>
+                        {
+                            HideWrapperEvent(panelInfo, panelName, isDestory, callBack);
+                        });
+                        break;
                 }
-                //如果不销毁 那么就只是失活 下次再显示的时候 直接复用即可
-                else
-                    panelInfo.panel.gameObject.SetActive(false);
+
             }
         }
+    }
+
+    private void HideWrapperEvent<T>(PanelInfo<T> panelInfo, string panelName, bool isDestory, UnityAction callBack) where T : BasePanel
+    {
+        callBack?.Invoke();
+        //如果要销毁  就直接将面板销毁从字典中移除记录
+        if (isDestory)
+        {
+            //销毁面板
+            GameObject.Destroy(panelInfo.panel.gameObject);
+            //从容器中移除
+            panelDic.Remove(panelName);
+        }
+        //如果不销毁 那么就只是失活 下次再显示的时候 直接复用即可
+        else
+            panelInfo.panel.gameObject.SetActive(false);
     }
 
     /// <summary>
     /// 获取面板
     /// </summary>
     /// <typeparam name="T">面板的类型</typeparam>
-    public void GetPanel<T>( UnityAction<T> callBack ) where T:BasePanel
+    public void GetPanel<T>(UnityAction<T> callBack) where T : BasePanel
     {
         string panelName = typeof(T).Name;
         if (panelDic.ContainsKey(panelName))
@@ -246,12 +396,12 @@ public class UIMgr : BaseManager<UIMgr>
             //取出字典中已经占好位置的数据
             PanelInfo<T> panelInfo = panelDic[panelName] as PanelInfo<T>;
             //正在加载中
-            if(panelInfo.panel == null)
+            if (panelInfo.panel == null)
             {
                 //加载中 应该等待加载结束 再通过回调传递给外部去使用
                 panelInfo.callBack += callBack;
             }
-            else if(!panelInfo.isHide)//加载结束 并且没有隐藏
+            else if (!panelInfo.isHide)//加载结束 并且没有隐藏
             {
                 callBack?.Invoke(panelInfo.panel);
             }

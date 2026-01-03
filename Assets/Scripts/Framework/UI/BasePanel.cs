@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening; // 导入DOTween命名空间
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -12,40 +14,66 @@ public abstract class BasePanel : MonoBehaviour
     /// </summary>
     protected Dictionary<string, UIBehaviour> controlDic = new Dictionary<string, UIBehaviour>();
 
+    #region 动效相关属性
     /// <summary>
-    /// 控件默认名字 如果得到的控件名字存在于这个容器 意味着我们不会通过代码去使用它 它只会是起到显示作用的控件
+    /// 是否启用显示动效
     /// </summary>
-    private static List<string> defaultNameList = new List<string>() { "Image",
-                                                                   "Text (TMP)",
-                                                                   "RawImage",
-                                                                   "Background",
-                                                                   "Checkmark",
-                                                                   "Label",
-                                                                   "Text (Legacy)",
-                                                                   "Arrow",
-                                                                   "Placeholder",
-                                                                   "Fill",
-                                                                   "Handle",
-                                                                   "Viewport",
-                                                                   "Scrollbar Horizontal",
-                                                                   "Scrollbar Vertical"};
+    [Header("动效设置")]
+    public bool enableShowAnimation = true;
 
+    /// <summary>
+    /// 是否启用隐藏动效
+    /// </summary>
+    public bool enableHideAnimation = true;
+
+    /// <summary>
+    /// 动效持续时间（秒）
+    /// </summary>
+    public float animationDuration = 0.3f;
+
+    /// <summary>
+    /// 缓动函数
+    /// </summary>
+    public Ease animationEase = Ease.OutQuad;
+
+    /// <summary>
+    /// 原始位置（用于恢复）
+    /// </summary>
+    private Vector3 originalPosition;
+
+    /// <summary>
+    /// 原始缩放（用于恢复）
+    /// </summary>
+    private Vector3 originalScale = Vector3.one;
+
+    /// <summary>
+    /// 原始透明度（用于恢复）
+    /// </summary>
+    private float originalAlpha = 1f;
+    #endregion
 
     protected virtual void Awake()
     {
-        //为了避免 某一个对象上存在两种控件的情况
-        //我们应该优先查找重要的组件
-        FindChildrenControl<Button>();
-        FindChildrenControl<Toggle>();
-        FindChildrenControl<Slider>();
-        FindChildrenControl<InputField>();
-        FindChildrenControl<ScrollRect>();
-        FindChildrenControl<Dropdown>();
-        //即使对象上挂在了多个组件 只要优先找到了重要组件
-        //之后也可以通过重要组件得到身上其他挂载的内容
-        FindChildrenControl<Text>();
-        FindChildrenControl<TextMeshPro>();
-        FindChildrenControl<Image>();
+        if (!enableShowAnimation && !enableHideAnimation)
+        {
+            return;
+        }
+        // 保存原始状态
+        originalPosition = transform.position;
+        originalScale = transform.localScale;
+
+        // 获取CanvasGroup组件，如果没有则添加
+        CanvasGroup canvasGroup;
+        if (TryGetComponent(out canvasGroup))
+        {
+            originalAlpha = canvasGroup.alpha;
+        }
+        else
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            canvasGroup.alpha = 1;
+            originalAlpha = canvasGroup.alpha;
+        }
     }
 
     protected virtual void Start()
@@ -56,88 +84,391 @@ public abstract class BasePanel : MonoBehaviour
     /// <summary>
     /// 面板显示时会调用的逻辑
     /// </summary>
-    public abstract void ShowMe();
+    public virtual void ShowMe(UnityAction callback = null)
+    {
+        //执行默认的显示面板想要做的事情
+        callback?.Invoke();
+    }
 
     /// <summary>
     /// 面板隐藏时会调用的逻辑
     /// </summary>
-    public abstract void HideMe();
+    public virtual void HideMe(UnityAction callback = null)
+    {
+        //执行默认的隐藏面板想要做的事情
+        callback?.Invoke();
+    }
+
+
+    #region 动效方法
 
     /// <summary>
-    /// 获取指定名字以及指定类型的组件
+    /// 从下到上弹出显示
     /// </summary>
-    /// <typeparam name="T">组件类型</typeparam>
-    /// <param name="name">组件名字</param>
-    /// <returns></returns>
-    public T GetControl<T>(string name) where T : UIBehaviour
+    /// <param name="offsetY">初始Y轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowFromBottom(float offsetY = 200f, UnityAction callback = null)
     {
-        if (controlDic.ContainsKey(name))
+        if (!enableShowAnimation)
         {
-            T control = controlDic[name] as T;
-            if (control == null)
-                Debug.LogError($"不存在对应名字{name}类型为{typeof(T)}的组件");
-            return control;
+            callback?.Invoke();
+            return;
         }
-        else
+
+        // 重置状态
+        transform.position = originalPosition + new Vector3(0, -offsetY, 0);
+        SetAlpha(0);
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition, animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
         {
-            Debug.LogError($"不存在对应名字{name}的组件");
-            return null;
-        }
-    }
-
-    protected virtual void ClickBtn(string btnName)
-    {
-
-    }
-
-    protected virtual void SliderValueChange(string sliderName, float value)
-    {
-
-    }
-
-    protected virtual void ToggleValueChange(string sliderName, bool value)
-    {
-
-    }
-
-    private void FindChildrenControl<T>() where T : UIBehaviour
-    {
-        T[] controls = this.GetComponentsInChildren<T>(true);
-        for (int i = 0; i < controls.Length; i++)
-        {
-            //获取当前控件的名字
-            string controlName = controls[i].gameObject.name;
-            //通过这种方式 将对应组件记录到字典中
-            if (!controlDic.ContainsKey(controlName))
-            {
-                if (!defaultNameList.Contains(controlName))
-                {
-                    controlDic.Add(controlName, controls[i]);
-                    //判断控件的类型 决定是否加事件监听
-                    if (controls[i] is Button)
-                    {
-                        (controls[i] as Button).onClick.AddListener(() =>
-                        {
-                            ClickBtn(controlName);
-                        });
-                    }
-                    else if (controls[i] is Slider)
-                    {
-                        (controls[i] as Slider).onValueChanged.AddListener((value) =>
-                        {
-                            SliderValueChange(controlName, value);
-                        });
-                    }
-                    else if (controls[i] is Toggle)
-                    {
-                        (controls[i] as Toggle).onValueChanged.AddListener((value) =>
-                        {
-                            ToggleValueChange(controlName, value);
-                        });
-                    }
-                }
-
-            }
+            sequence.OnComplete(() => callback());
         }
     }
+
+    /// <summary>
+    /// 从小到大缩放显示
+    /// </summary>
+    /// <param name="scaleFactor">初始缩放因子</param>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowWithScale(float scaleFactor = 0.5f, UnityAction callback = null)
+    {
+        if (!enableShowAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 重置状态
+        transform.localScale = originalScale * scaleFactor;
+        SetAlpha(0);
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOScale(originalScale, animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 淡入显示
+    /// </summary>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowWithFade(UnityAction callback = null)
+    {
+        if (!enableShowAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 重置状态
+        SetAlpha(0);
+
+        // 执行动画
+        DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration)
+            .SetEase(animationEase)
+            .OnComplete(() => callback?.Invoke());
+    }
+
+    /// <summary>
+    /// 从左到右滑入显示
+    /// </summary>
+    /// <param name="offsetX">初始X轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowFromLeft(float offsetX = 200f, UnityAction callback = null)
+    {
+        if (!enableShowAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 重置状态
+        transform.position = originalPosition + new Vector3(-offsetX, 0, 0);
+        SetAlpha(0);
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition, animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 从上到下滑入显示
+    /// </summary>
+    /// <param name="offsetY">初始Y轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowFromTop(float offsetY = 200f, UnityAction callback = null)
+    {
+        if (!enableShowAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 重置状态
+        transform.position = originalPosition + new Vector3(0, offsetY, 0);
+        SetAlpha(0);
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition, animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 从右到左滑入显示
+    /// </summary>
+    /// <param name="offsetX">初始X轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowFromRight(float offsetX = 200f, UnityAction callback = null)
+    {
+        if (!enableShowAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 重置状态
+        transform.position = originalPosition + new Vector3(offsetX, 0, 0);
+        SetAlpha(0);
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition, animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 带弹跳效果的显示
+    /// </summary>
+    /// <param name="callback">动画完成回调</param>
+    public void ShowWithBounce(UnityAction callback = null)
+    {
+        if (!enableShowAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 重置状态
+        transform.localScale = Vector3.zero;
+        SetAlpha(0);
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOScale(1.2f, animationDuration * 0.6f).SetEase(Ease.OutBack));
+        sequence.Append(transform.DOScale(originalScale, animationDuration * 0.4f).SetEase(Ease.InBack));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), originalAlpha, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 向下滑出隐藏
+    /// </summary>
+    /// <param name="offsetY">Y轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void HideToBottom(float offsetY = 200f, UnityAction callback = null)
+    {
+        if (!enableHideAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition + new Vector3(0, -offsetY, 0), animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), 0, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 缩小隐藏
+    /// </summary>
+    /// <param name="scaleFactor">最终缩放因子</param>
+    /// <param name="callback">动画完成回调</param>
+    public void HideWithScale(float scaleFactor = 0.5f, UnityAction callback = null)
+    {
+        if (!enableHideAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOScale(originalScale * scaleFactor, animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), 0, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 淡出隐藏
+    /// </summary>
+    /// <param name="callback">动画完成回调</param>
+    public void HideWithFade(UnityAction callback = null)
+    {
+        if (!enableHideAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 执行动画
+        DOTween.To(() => GetAlpha(), x => SetAlpha(x), 0, animationDuration)
+            .SetEase(animationEase)
+            .OnComplete(() => callback?.Invoke());
+    }
+
+    /// <summary>
+    /// 向左滑出隐藏
+    /// </summary>
+    /// <param name="offsetX">X轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void HideToLeft(float offsetX = 200f, UnityAction callback = null)
+    {
+        if (!enableHideAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition + new Vector3(-offsetX, 0, 0), animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), 0, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 向上滑出隐藏
+    /// </summary>
+    /// <param name="offsetY">Y轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void HideToTop(float offsetY = 200f, UnityAction callback = null)
+    {
+        if (!enableHideAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition + new Vector3(0, offsetY, 0), animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), 0, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    /// <summary>
+    /// 向右滑出隐藏
+    /// </summary>
+    /// <param name="offsetX">X轴偏移量</param>
+    /// <param name="callback">动画完成回调</param>
+    public void HideToRight(float offsetX = 200f, UnityAction callback = null)
+    {
+        if (!enableHideAnimation)
+        {
+            callback?.Invoke();
+            return;
+        }
+
+        // 执行动画
+        Sequence sequence = DOTween.Sequence();
+        sequence.Append(transform.DOMove(originalPosition + new Vector3(offsetX, 0, 0), animationDuration).SetEase(animationEase));
+        sequence.Join(DOTween.To(() => GetAlpha(), x => SetAlpha(x), 0, animationDuration).SetEase(animationEase));
+
+        if (callback != null)
+        {
+            sequence.OnComplete(() => callback());
+        }
+    }
+
+    #endregion
+
+    #region 辅助方法
+
+    /// <summary>
+    /// 获取当前透明度
+    /// </summary>
+    /// <returns>透明度值</returns>
+    private float GetAlpha()
+    {
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            return canvasGroup.alpha;
+        }
+        return 1f;
+    }
+
+    /// <summary>
+    /// 设置透明度
+    /// </summary>
+    /// <param name="alpha">透明度值</param>
+    private void SetAlpha(float alpha)
+    {
+        CanvasGroup canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = alpha;
+        }
+    }
+
+    /// <summary>
+    /// 重置到初始状态
+    /// </summary>
+    protected void ResetToInitialState()
+    {
+        transform.position = originalPosition;
+        transform.localScale = originalScale;
+        SetAlpha(originalAlpha);
+    }
+
+    #endregion
 }

@@ -37,7 +37,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     [MenuItem("GameObject/生成面板脚本")]
     static void CreateFindComponentScripts()
     {
-         GameObject obj = Selection.activeGameObject;
+        GameObject obj = Selection.activeGameObject;
         if (obj == null)
         {
             Debug.LogError("需要选择GameObject");
@@ -461,6 +461,7 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         sb.AppendLine(" *注意:自动生成的内容仅追加/移除，不会覆盖手写逻辑；新增/删除组件后再次生成，会标记对应代码行");
         sb.AppendLine("----------------------------------*/");
         sb.AppendLine("using UnityEngine;");
+        sb.AppendLine("using UnityEngine.Events;");
         sb.AppendLine("using UnityEngine.UI;");
         sb.AppendLine("using TMPro;");
         sb.AppendLine();
@@ -529,13 +530,17 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
         sb.AppendLine();
 
         // 显示/隐藏方法
-        sb.AppendLine($"{nameSpacePrefix}\tpublic override void ShowMe()");
+        sb.AppendLine($"{nameSpacePrefix}\tpublic override void ShowMe(UnityAction callback = null)");
         sb.AppendLine($"{nameSpacePrefix}\t{{");
+        sb.AppendLine($"{nameSpacePrefix}\t\t//执行父类的ShowMe方法");
+        sb.AppendLine($"{nameSpacePrefix}\t\tbase.ShowMe(callback);");
         sb.AppendLine($"{nameSpacePrefix}\t\t//自己手写的ShowMe逻辑，不会被覆盖");
         sb.AppendLine($"{nameSpacePrefix}\t}}");
         sb.AppendLine();
-        sb.AppendLine($"{nameSpacePrefix}\tpublic override void HideMe()");
+        sb.AppendLine($"{nameSpacePrefix}\tpublic override void HideMe(UnityAction callback = null)");
         sb.AppendLine($"{nameSpacePrefix}\t{{");
+        sb.AppendLine($"{nameSpacePrefix}\t\t//执行父类的HideMe方法");
+        sb.AppendLine($"{nameSpacePrefix}\t\tbase.HideMe(callback);");
         sb.AppendLine($"{nameSpacePrefix}\t\t//自己手写的HideMe逻辑，不会被覆盖");
         sb.AppendLine($"{nameSpacePrefix}\t}}");
 
@@ -765,31 +770,31 @@ public class GeneratorBindComponentTool : UnityEditor.Editor
     {
         // 清理移除标记和对应行，移除新增标记
         string cleanContent = CleanRemoveContent(previewContent);
-        
+
         // 增量更新前先备份（首次生成无需备份）
         if (Settings.enableBackup && File.Exists(path))
         {
             BackupScript(path);
         }
-        
+
         // 写入文件
         File.WriteAllText(path, cleanContent, Encoding.UTF8);
-        
+
         // 刷新Unity资源
         AssetDatabase.Refresh();
-        
+
         // 关键：持久化本次自动生成的字段列表（从临时存储读取）
         string tempFieldsJson = PlayerPrefs.GetString($"{HistoryFieldsKeyPrefix}_Temp_{className}", "[]");
         PlayerPrefs.SetString($"{HistoryFieldsKeyPrefix}{className}", tempFieldsJson);
         // 清除临时存储
         PlayerPrefs.DeleteKey($"{HistoryFieldsKeyPrefix}_Temp_{className}");
-        
+
         // 记录类名
         EditorPrefs.SetString("GeneratorClassName", className);
 
         string backupTip = "";
         // 提示备份信息（从配置读取参数）
-        if(Settings.enableBackup)
+        if (Settings.enableBackup)
             backupTip = $"脚本生成成功！\n备份文件路径：{Settings.BackupFullPath}\n备份文件扩展名：{Settings.backupFileExtension}\n最多保留{Settings.maxBackupCount}个备份文件";
         else
             backupTip = "脚本生成成功！\n备份功能已禁用";

@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 937945058641933612}
   - component: {fileID: 2340634141962647299}
   - component: {fileID: 8934738888194530792}
-  - component: {fileID: 5467897806405843909}
+  - component: {fileID: 644147623714681153}
   m_Layer: 5
   m_Name: GameStartPanel
   m_TagString: Untagged
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5467897806405843909
+--- !u!114 &644147623714681153
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -210,14 +210,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2636411914246374182}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55c8d68c41313d5429513ffb94e4eff8, type: 3}
+  m_Script: {fileID: 11500000, guid: a821d6516f373984096fa5f2139e3893, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableShowAnimation: 1
+  enableHideAnimation: 1
+  animationDuration: 0.3
+  animationEase: 6
   btnStart: {fileID: 8732729939421885293}
   btnOptions: {fileID: 9110679777691307960}
   btnQuit: {fileID: 8439815791086538585}
-  testInt: 0
-  testStr: 
 --- !u!1 &2847494139268319299
 GameObject:
   m_ObjectHideFlags: 0
