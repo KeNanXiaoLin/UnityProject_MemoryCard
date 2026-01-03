@@ -184,7 +184,7 @@ GameObject:
   - component: {fileID: 2950467747556128627}
   - component: {fileID: 4217776566077103356}
   m_Layer: 5
-  m_Name: Text (TMP) (2)
+  m_Name: '[TMP]LevelInfo'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -626,7 +626,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 111
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1193,6 +1193,7 @@ MonoBehaviour:
   btnInfo: {fileID: 4548008149793729246}
   btnMute: {fileID: 5551191241274568658}
   btnHome: {fileID: 8508816287899095823}
+  LevelInfo: {fileID: 4217776566077103356}
 --- !u!114 &8059118275681461246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1543,7 +1544,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 11111s
+  m_text: 0s
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

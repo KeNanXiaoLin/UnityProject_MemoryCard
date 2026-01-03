@@ -17,6 +17,13 @@ public class GameLogic : MonoBehaviour
     // 新增：初始化动画完成标记（关键锁）
     private bool isInitAnimCompleted = false;
 
+    #region 新增GameUI更新数值
+    private int lastTime = 0;
+    private int curTime = 0;
+    private float t = 0;
+    private int curStep = 0;
+    #endregion
+
     public bool CanFlipNewCard
     {
         get
@@ -36,6 +43,15 @@ public class GameLogic : MonoBehaviour
 
     public void Init()
     {
+        //初始化一些数值，每次进入新的关卡都需要重置
+        t = 0;
+        curTime = 0;
+        lastTime = curTime;
+        EventCenter.Instance.EventTrigger<int>(E_EventType.E_TimeUpdate, curTime);
+        //初始化也需要分发一次事件，不然玩家感觉时间重置会很奇怪
+        curStep = 0;
+        EventCenter.Instance.EventTrigger<int>(E_EventType.E_StepUpdate, curStep);
+
         // 重置初始化动画标记
         isInitAnimCompleted = false;
         // 清空旧卡牌（避免残留）
@@ -73,6 +89,18 @@ public class GameLogic : MonoBehaviour
     {
         // 移除：Update中重复调用CheckMatch（原逻辑会导致多次触发，改为仅在第二张牌翻完后调用）
         ClickCard();
+        // 新增：关卡时间更新逻辑
+        if (isInitAnimCompleted)
+        {
+            t += Time.deltaTime;
+            curTime = Mathf.FloorToInt(t);
+            if (curTime != lastTime)
+            {
+                lastTime = curTime;
+                // 更新游戏UI中的时间数值
+                EventCenter.Instance.EventTrigger<int>(E_EventType.E_TimeUpdate, curTime);
+            }
+        }
     }
 
     private void ClickCard()
@@ -89,6 +117,9 @@ public class GameLogic : MonoBehaviour
                     flipCount++;
                     card.Flip((c) =>
                     {
+                        curStep += 1;
+                        // 更新游戏UI中的步数数值
+                        EventCenter.Instance.EventTrigger<int>(E_EventType.E_StepUpdate, curStep);
                         if (firstCard == null)
                         {
                             firstCard = c;
@@ -162,7 +193,10 @@ public class GameLogic : MonoBehaviour
             }, true);
             // 显示通关面板，目前没有通关面板，直接跳转下一关
             UIMgr.Instance.HidePanel<GameUIPanel>();
-            UIMgr.Instance.ShowPanel<LevelPassPanel>(showAnimType: E_ShowAnimType.SlideInFromLeft);
+            UIMgr.Instance.ShowPanel<LevelPassPanel>(showAnimType: E_ShowAnimType.ScaleIn, callBack: (panel) =>
+            {
+                panel.UpdateLevelPassInfo(curTime, curStep, GameManager.Instance.CurLevel);
+            });
             // 通关前先锁定点击，避免动画过程中重复触发
             isInitAnimCompleted = false;
             // GameManager.Instance.GoToNextLevel();
