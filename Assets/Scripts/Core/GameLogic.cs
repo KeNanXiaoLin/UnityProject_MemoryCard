@@ -162,7 +162,7 @@ public class GameLogic : MonoBehaviour
             }, true);
             // 显示通关面板，目前没有通关面板，直接跳转下一关
             UIMgr.Instance.HidePanel<GameUIPanel>();
-            UIMgr.Instance.ShowPanel<LevelPassPanel>(showAnimType: E_ShowAnimType.FadeIn);
+            UIMgr.Instance.ShowPanel<LevelPassPanel>(showAnimType: E_ShowAnimType.SlideInFromLeft);
             // 通关前先锁定点击，避免动画过程中重复触发
             isInitAnimCompleted = false;
             // GameManager.Instance.GoToNextLevel();
