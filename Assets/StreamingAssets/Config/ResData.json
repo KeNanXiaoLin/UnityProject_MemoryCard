@@ -20,6 +20,26 @@
         "assetExtension": "prefab"
     },
     {
+        "id": 3,
+        "resName": "GameUIPanel",
+        "resDes": "游戏面板",
+        "resType": 0,
+        "resPath": "UI/Panel/GameUIPanel",
+        "resEditorPath": "ArtRes/UI/Panel/GameUIPanel",
+        "resABPath": "ui",
+        "assetExtension": "prefab"
+    },
+    {
+        "id": 4,
+        "resName": "LevelPassPanel",
+        "resDes": "通关面板",
+        "resType": 0,
+        "resPath": "UI/Panel/LevelPassPanel",
+        "resEditorPath": "ArtRes/UI/Panel/LevelPassPanel",
+        "resABPath": "ui",
+        "assetExtension": "prefab"
+    },
+    {
         "id": 10001,
         "resName": "1",
         "resDes": "卡牌1",
