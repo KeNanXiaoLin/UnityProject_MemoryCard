@@ -188,5 +188,15 @@
         "resEditorPath": "ArtRes/VFX/Success",
         "resABPath": "vfx",
         "assetExtension": "prefab"
+    },
+    {
+        "id": 40001,
+        "resName": "BGM",
+        "resDes": "背景音乐",
+        "resType": 1,
+        "resPath": "Music/BGM",
+        "resEditorPath": "ArtRes/Music/BGM",
+        "resABPath": "music",
+        "assetExtension": "wav"
     }
 ]

@@ -22,7 +22,7 @@ public class MusicMgr : BaseManager<MusicMgr>
     private bool soundIsPlay = true;
 
 
-    private MusicMgr() 
+    private MusicMgr()
     {
         MonoMgr.Instance.AddFixedUpdateListener(Update);
     }
@@ -37,7 +37,7 @@ public class MusicMgr : BaseManager<MusicMgr>
         //为了避免边遍历边移除出问题 我们采用逆向遍历
         for (int i = soundList.Count - 1; i >= 0; --i)
         {
-            if(!soundList[i].isPlaying)
+            if (!soundList[i].isPlaying)
             {
                 //音效播放完毕了 不再使用了 我们将这个音效切片置空
                 soundList[i].clip = null;
@@ -53,7 +53,7 @@ public class MusicMgr : BaseManager<MusicMgr>
     {
         //动态创建播放背景音乐的组件 并且 不会过场景移除 
         //保证背景音乐在过场景时也能播放
-        if(bkMusic == null)
+        if (bkMusic == null)
         {
             GameObject obj = new GameObject();
             obj.name = "BKMusic";
@@ -63,6 +63,29 @@ public class MusicMgr : BaseManager<MusicMgr>
 
         //根据传入的背景音乐名字 来播放背景音乐
         ABResMgr.Instance.LoadResAsync<AudioClip>("music", name, (clip) =>
+        {
+            bkMusic.clip = clip;
+            bkMusic.loop = true;
+            bkMusic.volume = bkMusicValue;
+            bkMusic.Play();
+        });
+    }
+
+    //播放背景音乐
+    public void PlayBKMusic(int resID)
+    {
+        //动态创建播放背景音乐的组件 并且 不会过场景移除 
+        //保证背景音乐在过场景时也能播放
+        if (bkMusic == null)
+        {
+            GameObject obj = new GameObject();
+            obj.name = "BKMusic";
+            GameObject.DontDestroyOnLoad(obj);
+            bkMusic = obj.AddComponent<AudioSource>();
+        }
+
+        //根据传入的背景音乐名字 来播放背景音乐
+        ResLoadMgr.Instance.LoadRes<AudioClip>(resID, (clip) =>
         {
             bkMusic.clip = clip;
             bkMusic.loop = true;
@@ -120,7 +143,7 @@ public class MusicMgr : BaseManager<MusicMgr>
             //存储容器 用于记录 方便之后判断是否停止
             //由于从缓存池中取出对象 有可能取出一个之前正在使用的（超上限时）
             //所以我们需要判断 容器中没有记录再去记录 不要重复去添加即可
-            if(!soundList.Contains(source))
+            if (!soundList.Contains(source))
                 soundList.Add(source);
             //传递给外部使用
             callBack?.Invoke(source);
@@ -133,7 +156,7 @@ public class MusicMgr : BaseManager<MusicMgr>
     /// <param name="source">音效组件对象</param>
     public void StopSound(AudioSource source)
     {
-        if(soundList.Contains(source))
+        if (soundList.Contains(source))
         {
             //停止播放
             source.Stop();
@@ -165,7 +188,7 @@ public class MusicMgr : BaseManager<MusicMgr>
     /// <param name="isPlay">是否是继续播放 true为播放 false为暂停</param>
     public void PlayOrPauseSound(bool isPlay)
     {
-        if(isPlay)
+        if (isPlay)
         {
             soundIsPlay = true;
             for (int i = 0; i < soundList.Count; i++)
